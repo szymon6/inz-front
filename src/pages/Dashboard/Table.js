@@ -6,52 +6,40 @@ import supabase from '../../supabase'
 const Table = () => {
   const { tableName } = useParams()
 
-  const [data, setData] = useState('')
+  const [rows, setRows] = useState([])
+  const [columns, setColumns] = useState([])
+
   const [error, setError] = useState('')
 
   async function fetch() {
-    let { data, error } = await supabase.from(tableName).select('*')
+    let { data: rows, error } = await supabase.from(tableName).select('*')
 
+    //If table was not found
     if (error) {
-      console.log('hehe1')
       setError(error)
       return
     }
 
-    console.log(data)
-    setData(data)
+    setRows(rows)
+
+    let { data: columns } = await supabase
+      .from('columns')
+      .select('*, tables!inner(*)')
+      .eq('tables.name', 'cars')
+
+    let mappedColumns = columns.map((c) => {
+      return {
+        field: c.name,
+        headerName: c.display_name,
+        editable: true,
+      }
+    })
+
+    setColumns(mappedColumns)
   }
   useEffect(() => {
     fetch()
   }, [])
-
-  //TODO - zarówno nazwy kolumn, i wartości z supabase, na koniec zrobić też branie typów(chyba jakiś mapping potrzebny)
-  const columns = [
-    {
-      field: 'mark',
-      headerName: 'Mark',
-
-      editable: true,
-    },
-    {
-      field: 'year',
-      headerName: 'Year',
-
-      editable: true,
-    },
-    {
-      field: 'color',
-      headerName: 'Color',
-      editable: true,
-    },
-  ]
-
-  // const rows = [
-  //   { id: 1, mark: 'Porsche', year: 2000, color: 'blue' },
-  //   { id: 2, mark: 'BMW', year: 2010, color: 'red' },
-  //   { id: 3, mark: 'Mercedes', year: 1990, color: 'green' },
-  //   { id: 4, mark: 'Audi', year: 2020, color: 'yellow' },
-  // ]
 
   if (error !== '') {
     console.log('render errora')
@@ -62,7 +50,7 @@ const Table = () => {
     <div>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={data}
+          rows={rows}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
