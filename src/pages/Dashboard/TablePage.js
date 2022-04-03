@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import supabase from '../../supabase'
 
-const Table = () => {
+const TablePage = () => {
   const { tableName } = useParams()
 
   const [rows, setRows] = useState([])
@@ -32,6 +32,7 @@ const Table = () => {
         field: c.name,
         headerName: c.display_name,
         editable: true,
+        ...(c.type != null && { type: c.type }),
       }
     })
 
@@ -41,10 +42,8 @@ const Table = () => {
     fetch()
   }, [])
 
-  if (error !== '') {
-    console.log('render errora')
-    return <div>not found</div>
-  }
+  if (error !== '') return <div>table not found</div>
+  if (columns.length == 0) return <div></div>
 
   return (
     <div>
@@ -62,4 +61,4 @@ const Table = () => {
   )
 }
 
-export default Table
+export default TablePage

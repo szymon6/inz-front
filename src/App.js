@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
-import Table from './pages/Dashboard/Table'
+import TablePage from './pages/Dashboard/TablePage'
 import Test from './pages/Dashboard/Test'
 import LoginPage from './pages/LoginPage'
 
@@ -10,7 +10,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard />}>
-            <Route path="table/:tableName" element={<Table />} />
+            <Route path="table/:tableName" element={<TablePage />} />
             <Route path="test" element={<Test />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
