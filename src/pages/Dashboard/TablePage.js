@@ -19,19 +19,20 @@ const TablePage = () => {
       setError(error)
       return
     }
-
+    console.log(rows)
     setRows(rows)
 
     let { data: columns } = await supabase
       .from('columns')
       .select('*, tables!inner(*)')
-      .eq('tables.name', 'cars')
+      .eq('tables.name', tableName)
 
     let mappedColumns = columns.map((c) => {
       return {
         field: c.name,
         headerName: c.display_name,
         editable: true,
+        width: 150,
         ...(c.type != null && { type: c.type }),
       }
     })
