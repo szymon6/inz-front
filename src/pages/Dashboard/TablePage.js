@@ -1,3 +1,4 @@
+import { Box, CircularProgress } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -44,7 +45,13 @@ const TablePage = () => {
   }, [tableName])
 
   if (error !== '') return <div>table not found</div>
-  if (columns.length == 0) return <div></div>
+  if (columns.length == 0) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <div>
