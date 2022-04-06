@@ -17,7 +17,7 @@ import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 
 const drawerWidth = 240
 
@@ -78,6 +78,17 @@ export default function Dashboard() {
     setOpen(false)
   }
 
+  const drawerOptions = [
+    {
+      name: 'Cars',
+      path: '/table/cars',
+    },
+    {
+      name: 'People',
+      path: '/table/people',
+    },
+  ]
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -121,13 +132,12 @@ export default function Dashboard() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
+          {drawerOptions.map((option) => (
+            <Link to={option.path} style={{ textDecoration: 'none' }}>
+              <ListItem button key={option.name}>
+                <ListItemText primary={option.name} />
+              </ListItem>
+            </Link>
           ))}
         </List>
         <Divider />

@@ -41,7 +41,7 @@ const TablePage = () => {
   }
   useEffect(() => {
     fetch()
-  }, [])
+  }, [tableName])
 
   if (error !== '') return <div>table not found</div>
   if (columns.length == 0) return <div></div>
