@@ -15,7 +15,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 import { Outlet } from 'react-router-dom'
-import { Link } from '../components/Styled'
+import { Link } from '../styled'
 
 const drawerWidth = 240
 
