@@ -119,6 +119,9 @@ export default function Dashboard() {
         open={open}
       >
         <DrawerHeader>
+          <Link to="/" style={{ marginRight: 'auto', textDecoration: 'none' }}>
+            <Typography variant="h5">Car Corp</Typography>
+          </Link>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? (
               <ChevronLeftIcon />
