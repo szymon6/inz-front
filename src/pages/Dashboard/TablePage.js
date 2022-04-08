@@ -12,7 +12,10 @@ const TablePage = () => {
   const [error, setError] = useState('')
 
   async function fetch() {
-    let { data: rows, error } = await supabase.from(tableName).select('*')
+    let { data: rows, error } = await supabase
+      .from(tableName)
+      .select('*')
+      .order('id')
 
     //If table was not found
     if (error) {
@@ -26,6 +29,7 @@ const TablePage = () => {
       .from('columns')
       .select('*, tables!inner(*)')
       .eq('tables.name', tableName)
+      .order('id')
 
     let mappedColumns = columns.map((c) => {
       return {
@@ -36,9 +40,17 @@ const TablePage = () => {
         ...(c.type != null && { type: c.type }),
       }
     })
-
     setColumns(mappedColumns)
   }
+
+  async function handleCellEditCommit(e) {
+    console.log(e)
+    await supabase
+      .from(tableName)
+      .update({ [e.field]: e.value })
+      .eq('id', e.id)
+  }
+
   useEffect(() => {
     fetch()
   }, [tableName])
@@ -57,6 +69,7 @@ const TablePage = () => {
           rowsPerPageOptions={[5]}
           checkboxSelection
           disableSelectionOnClick
+          onCellEditCommit={handleCellEditCommit}
         />
       </div>
     </div>
