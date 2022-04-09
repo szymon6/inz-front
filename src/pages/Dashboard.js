@@ -101,8 +101,8 @@ export default function Dashboard() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Persistent drawer
+          <Typography variant="h7" noWrap component="div">
+            Car Management System
           </Typography>
         </Toolbar>
       </AppBar>

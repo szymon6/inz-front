@@ -1,30 +1,43 @@
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { IconButton, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import supabase from '../../supabase'
-
 const TablePage = () => {
   const { tableName } = useParams()
 
+  const [tableDisplayName, setTableDisplayName] = useState('')
   const [rows, setRows] = useState([])
   const [columns, setColumns] = useState([])
+  const [notFound, setNotFound] = useState(false)
 
-  const [error, setError] = useState('')
+  const [selectedRows, setSelectedRows] = useState([])
 
   async function fetch() {
-    let { data: rows, error } = await supabase
-      .from(tableName)
-      .select('*')
-      .order('id')
+    //Fetch table display name
+    let { data: table } = await supabase
+      .from('tables')
+      .select('display_name')
+      .eq('name', tableName)
 
     //If table was not found
-    if (error) {
-      setError(error)
+    if (table.length === 0) {
+      console.log(111)
+      setNotFound(true)
       return
     }
+
+    setTableDisplayName(table[0].display_name)
+
+    //Fetch rows
+    let { data: rows } = await supabase.from(tableName).select('*').order('id')
+
     console.log(rows)
     setRows(rows)
 
+    //Fetch columns
     let { data: columns } = await supabase
       .from('columns')
       .select('*, tables!inner(*)')
@@ -53,12 +66,26 @@ const TablePage = () => {
 
   useEffect(() => {
     fetch()
+    setSelectedRows([])
   }, [tableName])
 
-  if (error !== '') return <div>table not found</div>
+  if (notFound) return <div>table not found</div>
 
   return (
     <div>
+      <header
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="h5" color="initial">
+          {tableDisplayName}
+        </Typography>
+        <IconButton color="primary">
+          <AddBoxIcon fontSize="large" />
+        </IconButton>
+      </header>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={rows}
@@ -70,8 +97,15 @@ const TablePage = () => {
           checkboxSelection
           disableSelectionOnClick
           onCellEditCommit={handleCellEditCommit}
+          selectionModel={selectedRows}
+          onSelectionModelChange={(ids) => setSelectedRows(ids)}
         />
       </div>
+      {selectedRows.length !== 0 && (
+        <IconButton color="primary">
+          <DeleteIcon />
+        </IconButton>
+      )}
     </div>
   )
 }
