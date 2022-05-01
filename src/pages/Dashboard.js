@@ -79,11 +79,11 @@ export default function Dashboard() {
   const drawerOptions = [
     {
       name: 'Cars',
-      path: '/table/cars',
+      path: '/table/car',
     },
     {
-      name: 'People',
-      path: '/table/people',
+      name: 'Owners',
+      path: '/table/owner',
     },
   ]
 
