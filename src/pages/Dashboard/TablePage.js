@@ -5,7 +5,6 @@ import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../api'
-import supabase from '../../supabase'
 const TablePage = () => {
   const { tableName } = useParams()
 
@@ -24,20 +23,45 @@ const TablePage = () => {
     if (error) return setNotFound(true)
     setTableDisplayName(tableInfo.displayName)
 
+    console.log(tableInfo.columns6)
+
     //column info
-    let mappedColumns = tableInfo.columns.map((c) => {
-      return {
-        field: c.name,
-        headerName: c.displayName,
-        editable: true,
-        width: 150,
-        ...(c.type != null && { type: c.type }),
-      }
-    })
+    let mappedColumns = await Promise.all(
+      tableInfo.columns.map(async (c) => {
+        let options
+        if (c.type === 'singleSelect') {
+          const { data, error } = await api.get(
+            `info/options/${c.referenceToId}`
+          )
+          options = data
+        }
+
+        return {
+          field: c.name,
+          headerName: c.displayName,
+          editable: true,
+          width: 150,
+          ...(c.type && { type: c.type }),
+          ...(c.type === 'singleSelect' && {
+            valueOptions: options,
+            valueGetter: ({ value }) =>
+              options.find((o) => o.value == value).label,
+          }),
+        }
+      })
+    )
     setColumns(mappedColumns)
 
     // Fetch rowss
     let { data: rows } = await api.get(`table/${tableName}`)
+    console.log(rows)
+
+    // rows.forEach((r) => {
+    //   r.ownerId = 'Janusz'
+    // })
+
+    console.log(rows)
+
     setRows(rows)
 
     //TODO: reference
@@ -45,15 +69,17 @@ const TablePage = () => {
 
   async function handleCellEditCommit(e) {
     console.log(e)
-    await supabase
+    /*  await supabase
       .from(tableName)
       .update({ [e.field]: e.value })
-      .eq('id', e.id)
+      .eq('id', e.id)*/
   }
 
   useEffect(() => {
     fetch()
     setSelectedRows([])
+    setColumns([])
+    setRows([])
   }, [tableName])
 
   if (notFound) return <div>Table not found</div>
