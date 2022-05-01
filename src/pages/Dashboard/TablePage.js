@@ -4,6 +4,7 @@ import { IconButton, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import api from '../../api'
 import supabase from '../../supabase'
 const TablePage = () => {
   const { tableName } = useParams()
@@ -16,44 +17,30 @@ const TablePage = () => {
   const [selectedRows, setSelectedRows] = useState([])
 
   async function fetch() {
-    //Fetch table display name
-    let { data: table } = await supabase
-      .from('tables')
-      .select('display_name')
-      .eq('name', tableName)
+    //Fetch table info
 
-    //If table was not found
-    if (table.length === 0) {
-      console.log(111)
-      setNotFound(true)
-      return
-    }
+    //display name
+    const { data: tableInfo, error } = await api.get(`info/${tableName}`)
+    if (error) return setNotFound(true)
+    setTableDisplayName(tableInfo.displayName)
 
-    setTableDisplayName(table[0].display_name)
-
-    //Fetch rows
-    let { data: rows } = await supabase.from(tableName).select('*').order('id')
-
-    console.log(rows)
-    setRows(rows)
-
-    //Fetch columns
-    let { data: columns } = await supabase
-      .from('columns')
-      .select('*, tables!inner(*)')
-      .eq('tables.name', tableName)
-      .order('id')
-
-    let mappedColumns = columns.map((c) => {
+    //column info
+    let mappedColumns = tableInfo.columns.map((c) => {
       return {
         field: c.name,
-        headerName: c.display_name,
+        headerName: c.displayName,
         editable: true,
         width: 150,
         ...(c.type != null && { type: c.type }),
       }
     })
     setColumns(mappedColumns)
+
+    // Fetch rowss
+    let { data: rows } = await api.get(`table/${tableName}`)
+    setRows(rows)
+
+    //reference
   }
 
   async function handleCellEditCommit(e) {
@@ -69,7 +56,7 @@ const TablePage = () => {
     setSelectedRows([])
   }, [tableName])
 
-  if (notFound) return <div>table not found</div>
+  if (notFound) return <div>Table not found</div>
 
   return (
     <div>
