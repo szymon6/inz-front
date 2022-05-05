@@ -19,18 +19,14 @@ const Table = () => {
 
   const navigate = useNavigate()
 
-  const mapColumns = async columnsData => {
+  const mapColumns = async (columnsData) => {
     const columns = await Promise.all(
-      columnsData.map(async c => {
-        if (c.type === 'reference') c.type = 'singleSelect'
-
+      columnsData.map(async (c) => {
         let options
-        if (c.type === 'singleSelect') {
-          const { data, error } = await api.get(
-            `info/options/${c.referenceToId}`
-          )
+        if (c.type === 'reference') {
+          const { data } = await api.get(`info/options/${c.referenceToId}`)
           options = data
-          console.log(options)
+          c.type = 'singleSelect'
         }
 
         return {
@@ -45,7 +41,7 @@ const Table = () => {
 
             //map value(id) to label - for every cell
             valueGetter: ({ value }) =>
-              options.find(o => o.value === value).label,
+              options.find((o) => o.value === value).label,
           }),
         }
       })
@@ -111,7 +107,7 @@ const Table = () => {
           disableSelectionOnClick
           onCellEditCommit={handleCellEditCommit}
           selectionModel={selectedRows}
-          onSelectionModelChange={ids => setSelectedRows(ids)}
+          onSelectionModelChange={(ids) => setSelectedRows(ids)}
         />
       </div>
       {selectedRows.length !== 0 && (
