@@ -5,17 +5,21 @@ import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
-const TablePage = () => {
+import useMapping from '../../hooks/useMapping'
+
+const Table = () => {
   const { tableName } = useParams()
 
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [rows, setRows] = useState([])
-  const [columns, setColumns] = useState([])
+  const [mappedColumns, setMappedColumns] = useState([])
+
   const [notFound, setNotFound] = useState(false)
 
   const [selectedRows, setSelectedRows] = useState([])
 
   const navigate = useNavigate()
+  const mapping = useMapping()
 
   async function fetch() {
     //Fetch table info
@@ -26,35 +30,9 @@ const TablePage = () => {
     setTableDisplayName(tableInfo.displayName)
 
     //column info
-    let mappedColumns = await Promise.all(
-      tableInfo.columns.map(async (c) => {
-        let options
-        if (c.type === 'singleSelect') {
-          const { data, error } = await api.get(
-            `info/options/${c.referenceToId}`
-          )
-          options = data
-          console.log(options)
-        }
-
-        return {
-          field: c.name,
-          headerName: c.displayName,
-          editable: true,
-          width: 150,
-          ...(c.type && { type: c.type }),
-          ...(c.type === 'singleSelect' && {
-            //options for dropdown
-            valueOptions: options,
-
-            //map value(id) to label in a cell
-            valueGetter: ({ value }) =>
-              options.find((o) => o.value === value).label,
-          }),
-        }
-      })
-    )
-    setColumns(mappedColumns)
+    const columns = tableInfo.columns
+    const mappedColumns = await mapping.mapColumns(columns)
+    setMappedColumns(mappedColumns)
 
     // Fetch rowss
     let { data: rows } = await api.get(`table/${tableName}`)
@@ -63,13 +41,12 @@ const TablePage = () => {
   }
 
   async function handleCellEditCommit(e) {
-    console.log(e)
     await api.put(`table/${tableName}/${e.id}`, { [e.field]: e.value })
   }
 
   useEffect(() => {
     setSelectedRows([])
-    setColumns([])
+    setMappedColumns([])
     setRows([])
     fetch()
   }, [tableName])
@@ -94,8 +71,8 @@ const TablePage = () => {
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={rows}
-          columns={columns}
-          loading={rows.length === 0}
+          columns={mappedColumns}
+          loading={rows.length === 0 || mappedColumns.length == 0}
           rowHeight={40}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -115,4 +92,4 @@ const TablePage = () => {
   )
 }
 
-export default TablePage
+export default Table

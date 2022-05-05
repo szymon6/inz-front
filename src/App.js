@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import New from './pages/Dashboard/New'
-import TablePage from './pages/Dashboard/TablePage'
+import Table from './pages/Dashboard/Table'
 import Test from './pages/Dashboard/Test'
 import LoginPage from './pages/LoginPage'
 
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard />}>
-            <Route path="table/:tableName" element={<TablePage />} />
+            <Route path="table/:tableName" element={<Table />} />
             <Route path="table/:tableName/new" element={<New />} />
             <Route path="test" element={<Test />} />
           </Route>

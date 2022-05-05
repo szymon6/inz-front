@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
@@ -21,6 +21,7 @@ const New = () => {
     fetch()
   }, [])
 
+  if (notFound) return <div>Table not found</div>
   return (
     <div>
       <header
@@ -33,6 +34,9 @@ const New = () => {
           New record for {tableDisplayName}
         </Typography>
       </header>
+      <Box>
+        <TextField label="lab" required />
+      </Box>
 
       <Button
         variant="text"
