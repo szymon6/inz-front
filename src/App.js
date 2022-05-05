@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
+import New from './pages/Dashboard/New'
 import TablePage from './pages/Dashboard/TablePage'
 import Test from './pages/Dashboard/Test'
 import LoginPage from './pages/LoginPage'
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />}>
             <Route path="table/:tableName" element={<TablePage />} />
+            <Route path="table/:tableName/new" element={<New />} />
             <Route path="test" element={<Test />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />

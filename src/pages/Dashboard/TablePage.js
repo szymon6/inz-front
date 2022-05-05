@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { IconButton, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 const TablePage = () => {
   const { tableName } = useParams()
@@ -15,6 +15,8 @@ const TablePage = () => {
 
   const [selectedRows, setSelectedRows] = useState([])
 
+  const navigate = useNavigate()
+
   async function fetch() {
     //Fetch table info
 
@@ -22,8 +24,6 @@ const TablePage = () => {
     const { data: tableInfo, error } = await api.get(`info/${tableName}`)
     if (error) return setNotFound(true)
     setTableDisplayName(tableInfo.displayName)
-
-    console.log(tableInfo.columns6)
 
     //column info
     let mappedColumns = await Promise.all(
@@ -34,6 +34,7 @@ const TablePage = () => {
             `info/options/${c.referenceToId}`
           )
           options = data
+          console.log(options)
         }
 
         return {
@@ -43,9 +44,12 @@ const TablePage = () => {
           width: 150,
           ...(c.type && { type: c.type }),
           ...(c.type === 'singleSelect' && {
+            //options for dropdown
             valueOptions: options,
+
+            //map value(id) to label in a cell
             valueGetter: ({ value }) =>
-              options.find((o) => o.value == value).label,
+              options.find((o) => o.value === value).label,
           }),
         }
       })
@@ -55,35 +59,23 @@ const TablePage = () => {
     // Fetch rowss
     let { data: rows } = await api.get(`table/${tableName}`)
     console.log(rows)
-
-    // rows.forEach((r) => {
-    //   r.ownerId = 'Janusz'
-    // })
-
-    console.log(rows)
-
     setRows(rows)
-
-    //TODO: reference
   }
 
   async function handleCellEditCommit(e) {
     console.log(e)
-    /*  await supabase
-      .from(tableName)
-      .update({ [e.field]: e.value })
-      .eq('id', e.id)*/
+    await api.put(`table/${tableName}/${e.id}`, { [e.field]: e.value })
   }
 
   useEffect(() => {
-    fetch()
     setSelectedRows([])
     setColumns([])
     setRows([])
+    fetch()
   }, [tableName])
 
   if (notFound) return <div>Table not found</div>
-
+  //`../table/${tableName}`
   return (
     <div>
       <header
@@ -95,7 +87,7 @@ const TablePage = () => {
         <Typography variant="h5" color="initial">
           {tableDisplayName}
         </Typography>
-        <IconButton color="primary">
+        <IconButton color="primary" onClick={() => navigate('new')}>
           <AddBoxIcon fontSize="large" />
         </IconButton>
       </header>
