@@ -5,7 +5,6 @@ import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
-import useMapping from '../../hooks/useMapping'
 
 const Table = () => {
   const { tableName } = useParams()
@@ -19,7 +18,41 @@ const Table = () => {
   const [selectedRows, setSelectedRows] = useState([])
 
   const navigate = useNavigate()
-  const mapping = useMapping()
+
+  const mapColumns = async columnsData => {
+    const columns = await Promise.all(
+      columnsData.map(async c => {
+        if (c.type === 'reference') c.type = 'singleSelect'
+
+        let options
+        if (c.type === 'singleSelect') {
+          const { data, error } = await api.get(
+            `info/options/${c.referenceToId}`
+          )
+          options = data
+          console.log(options)
+        }
+
+        return {
+          field: c.name,
+          headerName: c.displayName,
+          editable: true,
+          width: 150,
+          ...(c.type && { type: c.type }),
+          ...(c.type === 'singleSelect' && {
+            //options for dropdown
+            valueOptions: options,
+
+            //map value(id) to label - for every cell
+            valueGetter: ({ value }) =>
+              options.find(o => o.value === value).label,
+          }),
+        }
+      })
+    )
+
+    return columns
+  }
 
   async function fetch() {
     //Fetch table info
@@ -30,13 +63,11 @@ const Table = () => {
     setTableDisplayName(tableInfo.displayName)
 
     //column info
-    const columns = tableInfo.columns
-    const mappedColumns = await mapping.mapColumns(columns)
+    const mappedColumns = await mapColumns(tableInfo.columns)
     setMappedColumns(mappedColumns)
 
     // Fetch rowss
     let { data: rows } = await api.get(`table/${tableName}`)
-    console.log(rows)
     setRows(rows)
   }
 
@@ -52,7 +83,7 @@ const Table = () => {
   }, [tableName])
 
   if (notFound) return <div>Table not found</div>
-  //`../table/${tableName}`
+
   return (
     <div>
       <header
@@ -72,7 +103,7 @@ const Table = () => {
         <DataGrid
           rows={rows}
           columns={mappedColumns}
-          loading={rows.length === 0 || mappedColumns.length == 0}
+          loading={rows.length === 0 || mappedColumns.length === 0}
           rowHeight={40}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -80,7 +111,7 @@ const Table = () => {
           disableSelectionOnClick
           onCellEditCommit={handleCellEditCommit}
           selectionModel={selectedRows}
-          onSelectionModelChange={(ids) => setSelectedRows(ids)}
+          onSelectionModelChange={ids => setSelectedRows(ids)}
         />
       </div>
       {selectedRows.length !== 0 && (

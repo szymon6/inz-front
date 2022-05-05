@@ -1,13 +1,15 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
+import FormField from '../../components/FormField'
 
 const New = () => {
   const { tableName } = useParams()
 
   const [notFound, setNotFound] = useState(false)
   const [tableDisplayName, setTableDisplayName] = useState('')
+  const [fields, setFields] = useState([])
   const navigate = useNavigate()
 
   async function fetch() {
@@ -15,6 +17,12 @@ const New = () => {
     const { data: tableInfo, error } = await api.get(`info/${tableName}`)
     if (error) return setNotFound(true)
     setTableDisplayName(tableInfo.displayName)
+
+    //column info
+    const columns = tableInfo.columns
+    // const mappedColumns = await mapping.mapColumns(columns)
+    setFields(columns)
+    console.log(columns)
   }
 
   useEffect(() => {
@@ -34,8 +42,11 @@ const New = () => {
           New record for {tableDisplayName}
         </Typography>
       </header>
-      <Box>
-        <TextField label="lab" required />
+
+      <Box sx={{ mt: 2 }}>
+        {fields.map(f => (
+          <FormField key={f.id} f={f} />
+        ))}
       </Box>
 
       <Button
