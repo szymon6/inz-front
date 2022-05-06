@@ -5,6 +5,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
+import TableStore from '../../store/TableStore'
 
 const Table = () => {
   const { tableName } = useParams()
@@ -19,9 +20,17 @@ const Table = () => {
 
   const navigate = useNavigate()
 
-  const mapColumns = async (columnsData) => {
-    const columns = await Promise.all(
-      columnsData.map(async (c) => {
+  async function fetch() {
+    //Fetch table info
+
+    //display name
+    const { data: tableInfo, error } = await api.get(`info/${tableName}`)
+    if (error) return setNotFound(true)
+    setTableDisplayName(tableInfo.displayName)
+
+    //column info
+    const mappedColumns = await Promise.all(
+      tableInfo.columns.map(async (c) => {
         let options
         if (c.type === 'reference') {
           const { data } = await api.get(`info/options/${c.referenceToId}`)
@@ -46,20 +55,6 @@ const Table = () => {
         }
       })
     )
-
-    return columns
-  }
-
-  async function fetch() {
-    //Fetch table info
-
-    //display name
-    const { data: tableInfo, error } = await api.get(`info/${tableName}`)
-    if (error) return setNotFound(true)
-    setTableDisplayName(tableInfo.displayName)
-
-    //column info
-    const mappedColumns = await mapColumns(tableInfo.columns)
     setMappedColumns(mappedColumns)
 
     // Fetch rowss
@@ -67,14 +62,19 @@ const Table = () => {
     setRows(rows)
   }
 
+  let tableStore
+
   async function handleCellEditCommit(e) {
     await api.put(`table/${tableName}/${e.id}`, { [e.field]: e.value })
   }
 
+  //TODO przetestowanie czy store dobrze pobiera dane
+  //zamenienie wszytskiego co trzeba na store (pamiętać o opakowaniu w observer)
+
   useEffect(() => {
+    tableStore = new TableStore(tableName)
     setSelectedRows([])
     setMappedColumns([])
-    setRows([])
     fetch()
   }, [tableName])
 

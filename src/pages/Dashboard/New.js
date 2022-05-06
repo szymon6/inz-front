@@ -18,11 +18,7 @@ const New = () => {
     if (error) return setNotFound(true)
     setTableDisplayName(tableInfo.displayName)
 
-    //column info
-    const columns = tableInfo.columns
-    // const mappedColumns = await mapping.mapColumns(columns)
-    setFields(columns)
-    console.log(columns)
+    setFields(tableInfo.columns)
   }
 
   useEffect(() => {
@@ -44,7 +40,7 @@ const New = () => {
       </header>
 
       <Box sx={{ mt: 2 }}>
-        {fields.map(f => (
+        {fields.map((f) => (
           <FormField key={f.id} f={f} />
         ))}
       </Box>
