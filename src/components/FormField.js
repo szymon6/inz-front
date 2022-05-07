@@ -3,7 +3,6 @@ import { Box } from '@mui/system'
 import React from 'react'
 
 const Field = (f) => <TextField label={f.displayName} required type={f.type} />
-//TODO jednak mobx state management
 //TODO branie z wiadomo czego
 const ReferenceField = (f) => (
   <Select defaultValue={1} label="Age" sx={{ minWidth: 120 }}>
