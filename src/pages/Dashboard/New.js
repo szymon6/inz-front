@@ -38,20 +38,31 @@ const New = () => {
           New record for {tableDisplayName}
         </Typography>
       </header>
-
-      <Box sx={{ mt: 2 }}>
-        {fields.map((f) => (
-          <FormField key={f.id} f={f} />
-        ))}
-      </Box>
-
-      <Button
-        variant="text"
-        color="primary"
-        onClick={() => navigate(`/table/${tableName}`)}
+      <Box
+        sx={{
+          mt: 5,
+          display: 'flex',
+          justifyContent: 'center',
+        }}
       >
-        Back
-      </Button>
+        <Box width="50%">
+          <Box sx={{ mt: 2 }}>
+            {fields.map((f) => (
+              <FormField key={f.id} f={f} />
+            ))}
+          </Box>
+
+          <Box>
+            <Button
+              variant="text"
+              color="primary"
+              onClick={() => navigate(`/table/${tableName}`)}
+            >
+              Back
+            </Button>
+          </Box>
+        </Box>
+      </Box>
     </div>
   )
 }
