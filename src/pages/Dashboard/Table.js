@@ -5,7 +5,6 @@ import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
-import TableStore from '../../store/TableStore'
 
 const Table = () => {
   const { tableName } = useParams()
@@ -13,7 +12,6 @@ const Table = () => {
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [rows, setRows] = useState([])
   const [mappedColumns, setMappedColumns] = useState([])
-
   const [notFound, setNotFound] = useState(false)
 
   const [selectedRows, setSelectedRows] = useState([])
@@ -62,8 +60,6 @@ const Table = () => {
     setRows(rows)
   }
 
-  let tableStore
-
   async function handleCellEditCommit(e) {
     await api.put(`table/${tableName}/${e.id}`, { [e.field]: e.value })
   }
@@ -72,9 +68,9 @@ const Table = () => {
   //zamenienie wszytskiego co trzeba na store (pamiętać o opakowaniu w observer)
 
   useEffect(() => {
-    tableStore = new TableStore(tableName)
     setSelectedRows([])
     setMappedColumns([])
+    setRows([])
     fetch()
   }, [tableName])
 
