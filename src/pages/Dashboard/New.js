@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 import FormField from '../../components/FormField'
@@ -11,6 +12,8 @@ const New = () => {
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [fields, setFields] = useState([])
   const navigate = useNavigate()
+
+  const { register, handleSubmit, reset } = useForm()
 
   async function fetch() {
     //fetch display name
@@ -25,6 +28,10 @@ const New = () => {
     fetch()
   }, [])
 
+  function submit(params) {
+    console.log(params)
+  }
+  //
   if (notFound) return <div>Table not found</div>
   return (
     <div>
@@ -46,21 +53,25 @@ const New = () => {
         }}
       >
         <Box width="50%">
-          <Box sx={{ mt: 2 }}>
-            {fields.map((f) => (
-              <FormField key={f.id} f={f} />
-            ))}
-          </Box>
+          <form onSubmit={handleSubmit(submit)}>
+            <Box sx={{ mt: 2 }}>
+              {fields.map((f) => (
+                <FormField key={f.id} f={f} {...register(f.name)} />
+              ))}
+            </Box>
 
-          <Box>
-            <Button
-              variant="text"
-              color="primary"
-              onClick={() => navigate(`/table/${tableName}`)}
-            >
-              Back
-            </Button>
-          </Box>
+            <Box>
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() => navigate(`/table/${tableName}`)}
+              >
+                Back
+              </Button>
+
+              <Button type="submit">Add</Button>
+            </Box>
+          </form>
         </Box>
       </Box>
     </div>
