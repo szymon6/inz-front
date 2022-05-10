@@ -30,8 +30,8 @@ const New = () => {
 
   async function submit(data) {
     console.log(data)
-    const { data: d, error } = await api.post(`table/${tableName}`, data)
-    console.log({ d, error })
+    await api.post(`table/${tableName}`, data)
+    navigate(`/table/${tableName}`)
   }
 
   if (notFound) return <div>Table not found</div>
@@ -58,7 +58,11 @@ const New = () => {
           <form onSubmit={handleSubmit(submit)}>
             <Box sx={{ mt: 2 }}>
               {fields.map((f) => (
-                <FormField key={f.id} f={f} {...register(f.name)} />
+                <FormField
+                  key={f.id}
+                  f={f}
+                  {...register(f.name, { valueAsNumber: f.type == 'number' })}
+                />
               ))}
             </Box>
 
