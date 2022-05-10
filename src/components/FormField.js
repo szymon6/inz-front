@@ -55,6 +55,5 @@ const FormField = forwardRef(({ f, ...rest }, ref) => {
     </Box>
   )
 })
-//TODO:  dodawanie nowego rekordu, obowiązkowe pola
-//TODO: edycja
+
 export default FormField

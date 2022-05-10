@@ -60,12 +60,16 @@ const Table = () => {
     setRows(rows)
   }
 
-  async function handleCellEditCommit(e) {
-    await api.put(`table/${tableName}/${e.id}`, { [e.field]: e.value })
+  function handleCellEditCommit(e) {
+    api.put(`table/${tableName}/${e.id}`, { [e.field]: e.value })
   }
 
-  //TODO przetestowanie czy store dobrze pobiera dane
-  //zamenienie wszytskiego co trzeba na store (pamiętać o opakowaniu w observer)
+  async function handleDelete() {
+    for await (const id of selectedRows) {
+      await api.delete(`table/${tableName}/${id}`)
+    }
+    fetch()
+  }
 
   useEffect(() => {
     setSelectedRows([])
@@ -107,7 +111,7 @@ const Table = () => {
       />
 
       {selectedRows.length !== 0 && (
-        <IconButton color="primary">
+        <IconButton color="primary" onClick={handleDelete}>
           <DeleteIcon />
         </IconButton>
       )}
