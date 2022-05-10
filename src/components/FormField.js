@@ -1,4 +1,4 @@
-import { MenuItem, Select, TextField } from '@mui/material'
+import { MenuItem, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { forwardRef, useEffect, useState } from 'react'
 import api from '../api'
@@ -7,13 +7,10 @@ const ReferenceField = forwardRef(({ f, ...rest }, ref) => {
   const [options, setOptions] = useState([])
 
   useEffect(() => {
-    fetch()
+    api
+      .get(`info/options/${f.referenceToId}`)
+      .then(({ data }) => setOptions(data))
   }, [])
-
-  async function fetch() {
-    const { data } = await api.get(`info/options/${f.referenceToId}`)
-    setOptions(data)
-  }
 
   const optionList = options.map((o) => (
     <MenuItem key={o.value} value={o.value}>
@@ -22,9 +19,17 @@ const ReferenceField = forwardRef(({ f, ...rest }, ref) => {
   ))
 
   return (
-    <Select fullWidth defaultValue={1} ref={ref} {...rest}>
-      {optionList.length ? optionList : <MenuItem value={1}></MenuItem>}
-    </Select>
+    <TextField
+      required
+      select
+      fullWidth
+      label={f.displayName}
+      defaultValue=""
+      ref={ref}
+      {...rest}
+    >
+      {optionList}
+    </TextField>
   )
 })
 

@@ -28,10 +28,12 @@ const New = () => {
     fetch()
   }, [])
 
-  function submit(params) {
-    console.log(params)
+  async function submit(data) {
+    console.log(data)
+    const { data: d, error } = await api.post(`table/${tableName}`, data)
+    console.log({ d, error })
   }
-  //
+
   if (notFound) return <div>Table not found</div>
   return (
     <div>
@@ -52,7 +54,7 @@ const New = () => {
           justifyContent: 'center',
         }}
       >
-        <Box width="50%">
+        <Box minWidth="400px" width="40%">
           <form onSubmit={handleSubmit(submit)}>
             <Box sx={{ mt: 2 }}>
               {fields.map((f) => (

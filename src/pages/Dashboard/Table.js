@@ -77,7 +77,7 @@ const Table = () => {
   if (notFound) return <div>Table not found</div>
 
   return (
-    <div>
+    <>
       <header
         style={{
           display: 'flex',
@@ -91,27 +91,27 @@ const Table = () => {
           <AddBoxIcon fontSize="large" />
         </IconButton>
       </header>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={rows}
-          columns={mappedColumns}
-          loading={rows.length === 0 || mappedColumns.length === 0}
-          rowHeight={40}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          checkboxSelection
-          disableSelectionOnClick
-          onCellEditCommit={handleCellEditCommit}
-          selectionModel={selectedRows}
-          onSelectionModelChange={(ids) => setSelectedRows(ids)}
-        />
-      </div>
+
+      <DataGrid
+        sx={{ height: '75vh' }}
+        rows={rows}
+        columns={mappedColumns}
+        loading={rows.length === 0 || mappedColumns.length === 0}
+        rowHeight={40}
+        pageSize={100}
+        checkboxSelection
+        disableSelectionOnClick
+        onCellEditCommit={handleCellEditCommit}
+        selectionModel={selectedRows}
+        onSelectionModelChange={(ids) => setSelectedRows(ids)}
+      />
+
       {selectedRows.length !== 0 && (
         <IconButton color="primary">
           <DeleteIcon />
         </IconButton>
       )}
-    </div>
+    </>
   )
 }
 
