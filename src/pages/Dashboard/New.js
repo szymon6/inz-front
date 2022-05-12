@@ -13,7 +13,7 @@ const New = () => {
   const [fields, setFields] = useState([])
   const navigate = useNavigate()
 
-  const { register, handleSubmit, reset } = useForm()
+  const { register, handleSubmit } = useForm()
 
   async function fetch() {
     //fetch display name

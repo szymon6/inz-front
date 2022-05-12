@@ -26,7 +26,6 @@ const Table = () => {
     if (error) return setNotFound(true)
     setTableDisplayName(tableInfo.displayName)
 
-    //column info
     const mappedColumns = await Promise.all(
       tableInfo.columns.map(async (c) => {
         let options
@@ -46,8 +45,8 @@ const Table = () => {
             //options for dropdown
             valueOptions: options,
 
-            //map value(id) to label - for every cell
-            valueGetter: ({ value }) =>
+            //map values(ids) to label for every cell
+            valueFormatter: ({ value }) =>
               options.find((o) => o.value === value).label,
           }),
         }
@@ -77,6 +76,8 @@ const Table = () => {
     setRows([])
     fetch()
   }, [tableName])
+
+  //const mappedRows = rows.map((r) => <a>{r}</a>)
 
   if (notFound) return <div>Table not found</div>
 
