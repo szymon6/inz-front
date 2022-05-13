@@ -22,7 +22,7 @@ const Table = () => {
     //Fetch table info
 
     //display name
-    const { data: tableInfo, error } = await api.get(`info/${tableName}`)
+    const { data: tableInfo, error } = await api.get(`table-info/${tableName}`)
     if (error) return setNotFound(true)
     setTableDisplayName(tableInfo.displayName)
 
@@ -30,9 +30,19 @@ const Table = () => {
       tableInfo.columns.map(async (c) => {
         let options
         if (c.type === 'reference') {
-          const { data } = await api.get(`info/options/${c.referenceToId}`)
+          const { data } = await api.get(`options/table/${c.referenceToId}`)
           options = data
           c.type = 'singleSelect'
+        }
+
+        if (c.type === 'dropdown') {
+          //TODO koniec
+          /*  const { data } = await api.get(
+            `dropdown/options/${c.referenceToDropdownId}` 
+          )
+          options = data*/
+          // c.type = 'singleSelect'
+          c.type = null
         }
 
         return {
@@ -76,8 +86,6 @@ const Table = () => {
     setRows([])
     fetch()
   }, [tableName])
-
-  //const mappedRows = rows.map((r) => <a>{r}</a>)
 
   if (notFound) return <div>Table not found</div>
 

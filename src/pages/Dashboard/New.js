@@ -17,7 +17,7 @@ const New = () => {
 
   async function fetch() {
     //fetch display name
-    const { data: tableInfo, error } = await api.get(`info/${tableName}`)
+    const { data: tableInfo, error } = await api.get(`table-info/${tableName}`)
     if (error) return setNotFound(true)
     setTableDisplayName(tableInfo.displayName)
 

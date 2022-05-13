@@ -8,7 +8,7 @@ const ReferenceField = forwardRef(({ f, ...rest }, ref) => {
 
   useEffect(() => {
     api
-      .get(`info/options/${f.referenceToId}`)
+      .get(`options/table/${f.referenceToId}`)
       .then(({ data }) => setOptions(data))
   }, [])
 
