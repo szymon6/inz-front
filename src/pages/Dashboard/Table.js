@@ -36,13 +36,12 @@ const Table = () => {
         }
 
         if (c.type === 'dropdown') {
-          //TODO koniec
-          /*  const { data } = await api.get(
-            `dropdown/options/${c.referenceToDropdownId}` 
+          const { data } = await api.get(
+            `options/dropdown/${c.referenceToDropdownId}`
           )
-          options = data*/
-          // c.type = 'singleSelect'
-          c.type = null
+          console.log(data)
+          options = data
+          c.type = 'singleSelect'
         }
 
         return {
@@ -56,8 +55,11 @@ const Table = () => {
             valueOptions: options,
 
             //map values(ids) to label for every cell
-            valueFormatter: ({ value }) =>
-              options.find((o) => o.value === value).label,
+            valueFormatter: ({ value }) => {
+              console.log(value)
+
+              return options.find((o) => o.value === value).label
+            },
           }),
         }
       })
