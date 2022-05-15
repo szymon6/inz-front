@@ -1,9 +1,9 @@
-import { MenuItem, TextField } from '@mui/material'
+import { Autocomplete, TextField } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { forwardRef, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import api from '../api'
 
-const ReferenceField = forwardRef(({ f, ...rest }, ref) => {
+const ReferenceField = ({ f, register, setValue }) => {
   const [options, setOptions] = useState([])
 
   useEffect(() => {
@@ -12,48 +12,66 @@ const ReferenceField = forwardRef(({ f, ...rest }, ref) => {
       .then(({ data }) => setOptions(data))
   }, [])
 
-  const optionList = options.map((o) => (
-    <MenuItem key={o.value} value={o.value}>
-      {o.label}
-    </MenuItem>
-  ))
-
   return (
-    <TextField
-      required
-      select
+    <Autocomplete
       fullWidth
-      label={f.displayName}
-      defaultValue=""
-      ref={ref}
-      {...rest}
-    >
-      {optionList}
-    </TextField>
-  )
-})
-
-const FormField = forwardRef(({ f, ...rest }, ref) => {
-  const Field = () => (
-    <TextField
-      fullWidth
-      label={f.displayName}
-      required
-      type={f.type}
-      ref={ref}
-      {...rest}
+      disablePortal
+      options={options}
+      renderInput={(params) => <TextField {...params} label={f.displayName} />}
+      {...register}
+      onChange={(_, v) => setValue(f.name, v.value)}
     />
   )
+}
+
+const DropdownField = ({ f, register, setValue }) => {
+  const [options, setOptions] = useState([])
+
+  useEffect(() => {
+    api
+      .get(`options/dropdown/${f.referenceToDropdownId}`)
+      .then(({ data }) => setOptions(data))
+  }, [])
+
+  return (
+    <Autocomplete
+      fullWidth
+      disablePortal
+      options={options}
+      renderInput={(params) => <TextField {...params} label={f.displayName} />}
+      {...register}
+      onChange={(_, v) => setValue(f.name, v.value)}
+    />
+  )
+}
+
+const Field = ({ f, register }) => (
+  <TextField
+    fullWidth
+    label={f.displayName}
+    required
+    type={f.type}
+    {...register}
+  />
+)
+
+const FormField = (p) => {
+  const { f } = p
 
   return (
     <Box my={2}>
-      {f.type !== 'reference' ? (
-        <Field />
-      ) : (
-        <ReferenceField f={f} ref={ref} {...rest} />
-      )}
+      {(() => {
+        switch (f.type) {
+          case 'reference':
+            return <ReferenceField {...p} />
+          case 'dropdown':
+            return <DropdownField {...p} />
+          default:
+            return <Field {...p} />
+        }
+      })()}
     </Box>
   )
-})
+}
 
 export default FormField

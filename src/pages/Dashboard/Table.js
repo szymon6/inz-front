@@ -55,11 +55,8 @@ const Table = () => {
             valueOptions: options,
 
             //map values(ids) to label for every cell
-            valueFormatter: ({ value }) => {
-              console.log(value)
-
-              return options.find((o) => o.value === value).label
-            },
+            valueFormatter: ({ value }) =>
+              options.find((o) => o.value === value).label,
           }),
         }
       })

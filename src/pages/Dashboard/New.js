@@ -13,7 +13,7 @@ const New = () => {
   const [fields, setFields] = useState([])
   const navigate = useNavigate()
 
-  const { register, handleSubmit } = useForm()
+  const { register, setValue, handleSubmit } = useForm()
 
   async function fetch() {
     //fetch display name
@@ -30,6 +30,7 @@ const New = () => {
 
   async function submit(data) {
     console.log(data)
+
     await api.post(`table/${tableName}`, data)
     navigate(`/table/${tableName}`)
   }
@@ -61,7 +62,10 @@ const New = () => {
                 <FormField
                   key={f.id}
                   f={f}
-                  {...register(f.name, { valueAsNumber: f.type == 'number' })}
+                  register={register(f.name, {
+                    valueAsNumber: f.type == 'number',
+                  })}
+                  setValue={setValue}
                 />
               ))}
             </Box>
