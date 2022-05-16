@@ -26,6 +26,7 @@ const ReferenceField = ({ f, register, setValue }) => {
 
 const DropdownField = ({ f, register, setValue }) => {
   const [options, setOptions] = useState([])
+  const [val, setVal] = useState(null)
 
   useEffect(() => {
     api
@@ -36,23 +37,29 @@ const DropdownField = ({ f, register, setValue }) => {
   return (
     <Autocomplete
       fullWidth
-      disablePortal
       options={options}
+      value={val}
       renderInput={(params) => <TextField {...params} label={f.displayName} />}
       {...register}
-      onChange={(_, v) => setValue(f.name, v.value)}
+      onChange={(_, v) => {
+        //todo tu też wywalić ten argument
+        if (v) {
+          console.log(v.value) //setValue(f.name, v.value)
+          setVal(v)
+        }
+      }}
+      onInputChange={(e, v, reason) => {
+        //todo jak wywalić te nieużywane argumenty
+        if (reason === 'reset') setVal(null)
+      }}
     />
   )
 }
+//TODO sprawić żeby Autocoplete dało się clearować
+//potem zrobić conditional manditory dla Autocopmlete i TextField
 
 const Field = ({ f, register }) => (
-  <TextField
-    fullWidth
-    label={f.displayName}
-    required
-    type={f.type}
-    {...register}
-  />
+  <TextField fullWidth label={f.displayName} type={f.type} {...register} />
 )
 
 const FormField = (p) => {

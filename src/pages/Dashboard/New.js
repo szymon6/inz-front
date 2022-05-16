@@ -31,8 +31,8 @@ const New = () => {
   async function submit(data) {
     console.log(data)
 
-    await api.post(`table/${tableName}`, data)
-    navigate(`/table/${tableName}`)
+    //  await api.post(`table/${tableName}`, data)
+    //  navigate(`/table/${tableName}`)
   }
 
   if (notFound) return <div>Table not found</div>
