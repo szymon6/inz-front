@@ -5,6 +5,7 @@ import api from '../api'
 
 const ReferenceField = ({ f, register, setValue }) => {
   const [options, setOptions] = useState([])
+  const [val, setVal] = useState(null)
 
   useEffect(() => {
     api
@@ -19,7 +20,15 @@ const ReferenceField = ({ f, register, setValue }) => {
       options={options}
       renderInput={(params) => <TextField {...params} label={f.displayName} />}
       {...register}
-      onChange={(_, v) => setValue(f.name, v.value)}
+      onChange={(_, value) => {
+        if (value) {
+          setVal(value)
+          setValue(f.name, value.value)
+        }
+      }}
+      onInputChange={(_, __, reason) => {
+        if (reason == 'reset') setVal(null)
+      }}
     />
   )
 }
@@ -41,22 +50,18 @@ const DropdownField = ({ f, register, setValue }) => {
       value={val}
       renderInput={(params) => <TextField {...params} label={f.displayName} />}
       {...register}
-      onChange={(_, v) => {
-        //todo tu też wywalić ten argument
-        if (v) {
-          console.log(v.value) //setValue(f.name, v.value)
-          setVal(v)
+      onChange={(_, value) => {
+        if (value) {
+          setVal(value)
+          setValue(f.name, value.value)
         }
       }}
-      onInputChange={(e, v, reason) => {
-        //todo jak wywalić te nieużywane argumenty
-        if (reason === 'reset') setVal(null)
+      onInputChange={(_, __, reason) => {
+        if (reason == 'reset') setVal(null)
       }}
     />
   )
 }
-//TODO sprawić żeby Autocoplete dało się clearować
-//potem zrobić conditional manditory dla Autocopmlete i TextField
 
 const Field = ({ f, register }) => (
   <TextField fullWidth label={f.displayName} type={f.type} {...register} />
