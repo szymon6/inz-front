@@ -29,9 +29,13 @@ const New = () => {
   }, [])
 
   async function submit(data) {
+    Object.keys(data).forEach((key) => {
+      if ([null, NaN, ''].includes(data[key])) delete data[key]
+    })
+
     console.log(data)
-    // await api.post(`table/${tableName}`, data)
-    // navigate(`/table/${tableName}`)
+    await api.post(`table/${tableName}`, data)
+    navigate(`/table/${tableName}`)
   }
 
   if (notFound) return <div>Table not found</div>

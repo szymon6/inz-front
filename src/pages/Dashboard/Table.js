@@ -56,7 +56,7 @@ const Table = () => {
 
             //map values(ids) to label for every cell
             valueFormatter: ({ value }) =>
-              options.find((o) => o.value === value).label,
+              value && options.find((o) => o.value === value).label,
           }),
         }
       })
