@@ -1,6 +1,5 @@
 import { Box, Button, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 import FormField from '../../components/FormField'
@@ -12,8 +11,6 @@ const New = () => {
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [fields, setFields] = useState([])
   const navigate = useNavigate()
-
-  const { register, setValue, handleSubmit } = useForm()
 
   async function fetch() {
     //fetch display name
@@ -28,14 +25,20 @@ const New = () => {
     fetch()
   }, [])
 
-  async function submit(data) {
-    Object.keys(data).forEach((key) => {
-      if ([null, NaN, ''].includes(data[key])) delete data[key]
-    })
+  const [formData, setFormData] = React.useState({})
 
-    console.log(data)
-    await api.post(`table/${tableName}`, data)
-    navigate(`/table/${tableName}`)
+  const handleChange = (key, data) => {
+    setFormData({
+      ...formData,
+      [key]: data,
+    })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    api
+      .post(`table/${tableName}`, formData)
+      .then(navigate(`/table/${tableName}`))
   }
 
   if (notFound) return <div>Table not found</div>
@@ -59,17 +62,10 @@ const New = () => {
         }}
       >
         <Box minWidth="400px" width="40%">
-          <form onSubmit={handleSubmit(submit)}>
+          <form onSubmit={handleSubmit}>
             <Box sx={{ mt: 2 }}>
               {fields.map((f) => (
-                <FormField
-                  key={f.id}
-                  f={f}
-                  register={register(f.name, {
-                    valueAsNumber: f.type == 'number',
-                  })}
-                  setValue={setValue}
-                />
+                <FormField key={f.id} f={f} handleChange={handleChange} />
               ))}
             </Box>
 
