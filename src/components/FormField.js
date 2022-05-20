@@ -15,11 +15,15 @@ const ReferenceField = ({ f, handleChange, dropdown = false }) => {
       .then(({ data }) => setOptions(data))
   }, [])
 
+  console.log(f)
+
   return (
     <Autocomplete
       fullWidth
       options={options}
-      renderInput={(params) => <TextField {...params} label={f.displayName} />}
+      renderInput={(params) => (
+        <TextField {...params} label={f.displayName} required={f.required} />
+      )}
       onChange={(_, value) => {
         handleChange(f.name, value != null ? value.value : null)
       }}
@@ -32,6 +36,7 @@ const Field = ({ f, handleChange }) => (
     fullWidth
     label={f.displayName}
     type={f.type}
+    required={f.required}
     onChange={(e) => {
       let data = e.target.value
       if (f.type == 'number') data = data != '' ? +data : null
