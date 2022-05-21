@@ -44,6 +44,8 @@ const Table = () => {
           c.type = 'singleSelect'
         }
 
+        if (c.type === 'bool') c.type = 'boolean'
+
         return {
           field: c.name,
           headerName: c.displayName,
@@ -57,6 +59,10 @@ const Table = () => {
             //map values(ids) to label for every cell
             valueFormatter: ({ value }) =>
               value && options.find((o) => o.value === value).label,
+          }),
+          ...(c.type === 'date' && {
+            valueFormatter: ({ value }) =>
+              value && new Date(value).toLocaleDateString('en-GB'),
           }),
         }
       })

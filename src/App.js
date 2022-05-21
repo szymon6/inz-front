@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import New from './pages/Dashboard/New'
 import Table from './pages/Dashboard/Table'
-import Test from './pages/Dashboard/Test'
 import LoginPage from './pages/LoginPage'
 
 function App() {
@@ -13,7 +12,6 @@ function App() {
           <Route path="/" element={<Dashboard />}>
             <Route path="table/:tableName" element={<Table />} />
             <Route path="table/:tableName/new" element={<New />} />
-            <Route path="test" element={<Test />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Routes>

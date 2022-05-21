@@ -39,8 +39,9 @@ const Field = ({ f, handleChange }) => (
     required={f.required}
     onChange={(e) => {
       let data = e.target.value
-      if (f.type == 'number') data = data != '' ? +data : null
-      else data = data != '' ? data.trim() : null
+      if (f.type == 'number')
+        data = data != '' ? +data : null //because +'' makes 0
+      else data = data.trim()
       handleChange(f.name, data)
     }}
   />
