@@ -31,16 +31,38 @@ const ReferenceField = ({ f, handleChange, dropdown = false }) => {
   )
 }
 
-const Field = ({ f, handleChange }) => (
+const DateField = ({ f, handleChange }) => {
+  const [empty, setEmpty] = useState(true)
+
+  return (
+    <TextField
+      fullWidth
+      label={f.displayName}
+      type="date"
+      // required={f.required}
+      sx={{
+        '*::-webkit-datetime-edit': {
+          color: empty ? 'transparent' : '#000',
+        },
+        '*:focus::-webkit-datetime-edit': { color: '#000' },
+      }}
+      onChange={(e) => {
+        setEmpty(e.target.value == '')
+        //handleChange(f.name, data)
+      }}
+    />
+  )
+}
+
+const Field = ({ f, handleChange, number = false }) => (
   <TextField
     fullWidth
     label={f.displayName}
     type={f.type}
-    required={f.required}
+    //  required={f.required}
     onChange={(e) => {
       let data = e.target.value
-      if (f.type == 'number')
-        data = data != '' ? +data : null //because +'' makes 0
+      if (number) data = data != '' ? +data : null //because +'' makes 0
       else data = data.trim()
       handleChange(f.name, data)
     }}
@@ -55,6 +77,10 @@ const FormField = (p) => (
           return <ReferenceField {...p} />
         case 'dropdown':
           return <ReferenceField dropdown {...p} />
+        case 'date':
+          return <DateField dropdown {...p} />
+        case 'number':
+          return <Field number {...p} />
         default:
           return <Field {...p} />
       }

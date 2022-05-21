@@ -36,6 +36,7 @@ const New = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log(formData)
     api
       .post(`table/${tableName}`, formData)
       .then(navigate(`/table/${tableName}`))
