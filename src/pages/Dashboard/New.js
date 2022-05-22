@@ -37,9 +37,9 @@ const New = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log(formData)
-    api
-      .post(`table/${tableName}`, formData)
-      .then(navigate(`/table/${tableName}`))
+    // api
+    //   .post(`table/${tableName}`, formData)
+    //   .then(navigate(`/table/${tableName}`))
   }
 
   if (notFound) return <div>Table not found</div>
@@ -66,7 +66,7 @@ const New = () => {
           <form onSubmit={handleSubmit}>
             <Box sx={{ mt: 2 }}>
               {fields.map((f) => (
-                <FormField key={f.id} f={f} handleChange={handleChange} />
+                <FormField key={f.id} field={f} handleChange={handleChange} />
               ))}
             </Box>
 

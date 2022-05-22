@@ -3,43 +3,45 @@ import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import api from '../api'
 
-const ReferenceField = ({ f, handleChange, dropdown = false }) => {
+const ReferenceField = ({ field, handleChange }) => {
   const [options, setOptions] = useState([])
   useEffect(() => {
     api
       .get(
-        dropdown
-          ? `options/dropdown/${f.referenceToDropdownId}`
-          : `options/table/${f.referenceToId}`
+        field.type == 'dropdown'
+          ? `options/dropdown/${field.referenceToDropdownId}`
+          : `options/table/${field.referenceToId}`
       )
       .then(({ data }) => setOptions(data))
   }, [])
-
-  console.log(f)
 
   return (
     <Autocomplete
       fullWidth
       options={options}
       renderInput={(params) => (
-        <TextField {...params} label={f.displayName} required={f.required} />
+        <TextField
+          {...params}
+          label={field.displayName}
+          required={field.required}
+        />
       )}
       onChange={(_, value) => {
-        handleChange(f.name, value != null ? value.value : null)
+        handleChange(field.name, value != null ? value.value : null)
       }}
     />
   )
 }
 
-const DateField = ({ f, handleChange }) => {
+const DateField = ({ f: field, handleChange }) => {
   const [empty, setEmpty] = useState(true)
 
   return (
     <TextField
       fullWidth
-      label={f.displayName}
+      label={field.displayName}
       type="date"
-      // required={f.required}
+      required={field.required}
       sx={{
         '*::-webkit-datetime-edit': {
           color: empty ? 'transparent' : '#000',
@@ -47,46 +49,49 @@ const DateField = ({ f, handleChange }) => {
         '*:focus::-webkit-datetime-edit': { color: '#000' },
       }}
       onChange={(e) => {
-        setEmpty(e.target.value == '')
-        //handleChange(f.name, data)
+        const data = e.target.value
+        setEmpty(data == '')
+        //   handleChange(f.name, new Date(data))
       }}
     />
   )
 }
 
-const Field = ({ f, handleChange, number = false }) => (
+const Field = ({ field, handleChange }) => (
   <TextField
     fullWidth
-    label={f.displayName}
-    type={f.type}
-    //  required={f.required}
+    label={field.displayName}
+    type={field.type}
+    required={field.required}
     onChange={(e) => {
       let data = e.target.value
-      if (number) data = data != '' ? +data : null //because +'' makes 0
+      if (field.type == 'number')
+        data = data != '' ? +data : null //because +'' makes 0
       else data = data.trim()
-      handleChange(f.name, data)
+      handleChange(field.name, data)
     }}
   />
 )
 
-const FormField = (p) => (
-  <Box my={2}>
-    {(() => {
-      switch (p.f.type) {
-        case 'reference':
-          return <ReferenceField {...p} />
-        case 'dropdown':
-          return <ReferenceField dropdown {...p} />
-        case 'date':
-          return <DateField dropdown {...p} />
-        case 'number':
-          return <Field number {...p} />
-        default:
-          return <Field {...p} />
-      }
-    })()}
-  </Box>
-)
+const FormField = (p) => {
+  const Input = (() => {
+    switch (p.field.type) {
+      case 'reference':
+      case 'dropdown':
+        return ReferenceField
+      case 'date':
+        return DateField
+      default:
+        return Field
+    }
+  })()
+
+  return (
+    <Box my={2}>
+      <Input {...p} />
+    </Box>
+  )
+}
 
 export default FormField
 
