@@ -37,9 +37,9 @@ const New = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log(formData)
-    // api
-    //   .post(`table/${tableName}`, formData)
-    //   .then(navigate(`/table/${tableName}`))
+    api
+      .post(`table/${tableName}`, formData)
+      .then(navigate(`/table/${tableName}`))
   }
 
   if (notFound) return <div>Table not found</div>
