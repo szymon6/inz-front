@@ -1,4 +1,9 @@
-import { Autocomplete, TextField } from '@mui/material'
+import {
+  Autocomplete,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+} from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import api from '../api'
@@ -33,7 +38,7 @@ const ReferenceField = ({ field, handleChange }) => {
   )
 }
 
-const DateField = ({ f: field, handleChange }) => {
+const DateField = ({ field, handleChange }) => {
   const [empty, setEmpty] = useState(true)
 
   return (
@@ -51,7 +56,7 @@ const DateField = ({ f: field, handleChange }) => {
       onChange={(e) => {
         const data = e.target.value
         setEmpty(data == '')
-        //   handleChange(f.name, new Date(data))
+        handleChange(field.name, new Date(data))
       }}
     />
   )
@@ -73,6 +78,19 @@ const Field = ({ field, handleChange }) => (
   />
 )
 
+const CheckBoxField = ({ field, handleChange }) => {
+  useEffect(() => {
+    handleChange(field.name, false)
+  }, [])
+
+  return (
+    <FormControlLabel
+      control={<Checkbox onChange={(_, v) => handleChange(field.name, v)} />}
+      label={field.displayName}
+    />
+  )
+}
+
 const FormField = (p) => {
   const Input = (() => {
     switch (p.field.type) {
@@ -81,6 +99,8 @@ const FormField = (p) => {
         return ReferenceField
       case 'date':
         return DateField
+      case 'bool':
+        return CheckBoxField
       default:
         return Field
     }
