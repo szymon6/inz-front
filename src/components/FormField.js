@@ -8,14 +8,14 @@ import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import api from '../api'
 
-const ReferenceField = ({ field, handleChange }) => {
+const ReferenceField = ({ f, handleChange }) => {
   const [options, setOptions] = useState([])
   useEffect(() => {
     api
       .get(
-        field.type == 'dropdown'
-          ? `options/dropdown/${field.referenceToDropdownId}`
-          : `options/table/${field.referenceToId}`
+        f.type == 'dropdown'
+          ? `options/dropdown/${f.referenceToDropdownId}`
+          : `options/table/${f.referenceToId}`
       )
       .then(({ data }) => setOptions(data))
   }, [])
@@ -25,28 +25,24 @@ const ReferenceField = ({ field, handleChange }) => {
       fullWidth
       options={options}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          label={field.displayName}
-          required={field.required}
-        />
+        <TextField {...params} label={f.displayName} required={f.required} />
       )}
       onChange={(_, value) => {
-        handleChange(field.name, value != null ? value.value : null)
+        handleChange(f.name, value != null ? value.value : null)
       }}
     />
   )
 }
 
-const DateField = ({ field, handleChange }) => {
+const DateField = ({ f, handleChange }) => {
   const [empty, setEmpty] = useState(true)
 
   return (
     <TextField
       fullWidth
-      label={field.displayName}
+      label={f.displayName}
       type="date"
-      required={field.required}
+      required={f.required}
       sx={{
         '*::-webkit-datetime-edit': {
           color: empty ? 'transparent' : '#000',
@@ -56,44 +52,44 @@ const DateField = ({ field, handleChange }) => {
       onChange={(e) => {
         const data = e.target.value
         setEmpty(data == '')
-        handleChange(field.name, new Date(data))
+        handleChange(f.name, new Date(data))
       }}
     />
   )
 }
 
-const Field = ({ field, handleChange }) => (
+const Field = ({ f, handleChange }) => (
   <TextField
     fullWidth
-    label={field.displayName}
-    type={field.type}
-    required={field.required}
+    label={f.displayName}
+    type={f.type}
+    required={f.required}
     onChange={(e) => {
       let data = e.target.value
-      if (field.type == 'number')
+      if (f.type == 'number')
         data = data != '' ? +data : null //because +'' makes 0
       else data = data.trim()
-      handleChange(field.name, data)
+      handleChange(f.name, data)
     }}
   />
 )
 
-const CheckBoxField = ({ field, handleChange }) => {
+const CheckBoxField = ({ f, handleChange }) => {
   useEffect(() => {
-    handleChange(field.name, false)
+    handleChange(f.name, false)
   }, [])
 
   return (
     <FormControlLabel
-      control={<Checkbox onChange={(_, v) => handleChange(field.name, v)} />}
-      label={field.displayName}
+      control={<Checkbox onChange={(_, v) => handleChange(f.name, v)} />}
+      label={f.displayName}
     />
   )
 }
 
 const FormField = (p) => {
   const Input = (() => {
-    switch (p.field.type) {
+    switch (p.f.type) {
       case 'reference':
       case 'dropdown':
         return ReferenceField
@@ -114,6 +110,3 @@ const FormField = (p) => {
 }
 
 export default FormField
-
-//TODO użycie hooka z context do przesłania funckji chandle submit
-//dokocznie na 2 pozostałych

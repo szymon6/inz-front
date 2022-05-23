@@ -6,6 +6,18 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 
+const common = (c) => ({
+  field: c.name,
+  headerName: c.displayName,
+  editable: true,
+  width: 150,
+})
+
+const boolColumn = (c) => ({
+  ...common(c),
+  type: 'boolean',
+})
+
 const Table = () => {
   const { tableName } = useParams()
 
@@ -44,7 +56,10 @@ const Table = () => {
           c.type = 'singleSelect'
         }
 
-        if (c.type === 'bool') c.type = 'boolean'
+        if (c.type === 'bool') {
+          console.log(boolColumn(c))
+          return boolColumn(c)
+        }
 
         return {
           field: c.name,

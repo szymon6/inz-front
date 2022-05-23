@@ -66,7 +66,7 @@ const New = () => {
           <form onSubmit={handleSubmit}>
             <Box sx={{ mt: 2 }}>
               {fields.map((f) => (
-                <FormField key={f.id} field={f} handleChange={handleChange} />
+                <FormField key={f.id} f={f} handleChange={handleChange} />
               ))}
             </Box>
 
