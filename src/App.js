@@ -12,6 +12,7 @@ function App() {
           <Route path="/" element={<Dashboard />}>
             <Route path="table/:tableName" element={<Table />} />
             <Route path="table/:tableName/new" element={<New />} />
+            {/* <Route path="table/:tableName/new" element={<Edit />} /> */}
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Routes>

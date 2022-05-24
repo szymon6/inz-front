@@ -1,10 +1,15 @@
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { IconButton, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link as UnstyledLink, useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
+
+const Link = styled(UnstyledLink)({
+  color: 'black',
+})
 
 const Table = () => {
   const { tableName } = useParams()
@@ -85,6 +90,9 @@ const Table = () => {
         const boolColumn = {
           type: 'boolean',
         }
+        const numberColumn = {
+          type: 'number',
+        }
 
         const column = await (async () => {
           switch (c.type) {
@@ -92,6 +100,8 @@ const Table = () => {
               return dateColumn
             case 'bool':
               return boolColumn
+            case 'number':
+              return numberColumn
             case 'reference':
             case 'dropdown':
               return await referenceColumn(c)
