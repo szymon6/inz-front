@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { IconButton, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 
 const Table = () => {
@@ -28,8 +28,46 @@ const Table = () => {
 
     const mappedColumns = await Promise.all(
       tableInfo.columns.map(async (c) => {
-        const boolColumn = {
-          type: 'boolean',
+        console.log(c)
+        const referenceColumn = async (c) => {
+          const { data: options } = await api.get(
+            c.type == 'dropdown'
+              ? `options/dropdown/${c.referenceToDropdownId}`
+              : `options/table/${c.referenceToId}`
+          )
+          console.log(options)
+
+          return {
+            type: 'singleSelect',
+
+            //options for dropdown
+            valueOptions: options,
+
+            //map values(ids) to label for every cell
+            valueFormatter: ({ value }) =>
+              value && options.find((o) => o.value === value).label,
+
+            //if its display value, change it to link
+            ...(c.type != 'reference' &&
+              c.displayValue && {
+                renderCell: ({ value, id }) => (
+                  <Link to={`${id}`}>
+                    {value && options.find((o) => o.value === value).label}
+                  </Link>
+                ),
+              }),
+            //the same, but foreign table
+            ...(c.type == 'reference' && {
+              renderCell: ({ value }) => {
+                const option = options.find((o) => o.value === value)
+                return (
+                  <Link to={`../c.table/${option.value}`}>
+                    {value && option.label}
+                  </Link>
+                )
+              },
+            }),
+          }
         }
 
         const dateColumn = {
@@ -38,25 +76,14 @@ const Table = () => {
             value && new Date(value).toLocaleDateString('en-GB'),
         }
 
-        const dropdownColumn = async (c) => {
-          const { data: options } = await api.get(
-            c.type == 'dropdown'
-              ? `options/dropdown/${c.referenceToDropdownId}`
-              : `options/table/${c.referenceToId}`
-          )
+        const stringColumn = {
+          ...(c.displayValue && {
+            renderCell: ({ value, id }) => <Link to={`${id}`}>{value}</Link>,
+          }),
+        }
 
-          return {
-            type: 'singleSelect',
-            valueFormatter: ({ value }) =>
-              value && new Date(value).toLocaleDateString('en-GB'),
-
-            //options for dropdown
-            valueOptions: options,
-
-            //map values(ids) to label for every cell
-            valueFormatter: ({ value }) =>
-              value && options.find((o) => o.value === value).label,
-          }
+        const boolColumn = {
+          type: 'boolean',
         }
 
         const column = await (async () => {
@@ -67,7 +94,9 @@ const Table = () => {
               return boolColumn
             case 'reference':
             case 'dropdown':
-              return await dropdownColumn(c) //todo reference
+              return await referenceColumn(c)
+            case null:
+              return await stringColumn
             default:
               return null
           }
