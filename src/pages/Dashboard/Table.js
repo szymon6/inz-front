@@ -6,18 +6,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 
-const common = (c) => ({
-  field: c.name,
-  headerName: c.displayName,
-  editable: true,
-  width: 150,
-})
-
-const boolColumn = (c) => ({
-  ...common(c),
-  type: 'boolean',
-})
-
 const Table = () => {
   const { tableName } = useParams()
 
@@ -40,45 +28,57 @@ const Table = () => {
 
     const mappedColumns = await Promise.all(
       tableInfo.columns.map(async (c) => {
-        let options
-        if (c.type === 'reference') {
-          const { data } = await api.get(`options/table/${c.referenceToId}`)
-          options = data
-          c.type = 'singleSelect'
+        const boolColumn = {
+          type: 'boolean',
         }
 
-        if (c.type === 'dropdown') {
-          const { data } = await api.get(
-            `options/dropdown/${c.referenceToDropdownId}`
+        const dateColumn = {
+          type: 'date',
+          valueFormatter: ({ value }) =>
+            value && new Date(value).toLocaleDateString('en-GB'),
+        }
+
+        const dropdownColumn = async (c) => {
+          const { data: options } = await api.get(
+            c.type == 'dropdown'
+              ? `options/dropdown/${c.referenceToDropdownId}`
+              : `options/table/${c.referenceToId}`
           )
-          console.log(data)
-          options = data
-          c.type = 'singleSelect'
-        }
 
-        if (c.type === 'bool') {
-          console.log(boolColumn(c))
-          return boolColumn(c)
-        }
+          return {
+            type: 'singleSelect',
+            valueFormatter: ({ value }) =>
+              value && new Date(value).toLocaleDateString('en-GB'),
 
-        return {
-          field: c.name,
-          headerName: c.displayName,
-          editable: true,
-          width: 150,
-          ...(c.type && { type: c.type }),
-          ...(c.type === 'singleSelect' && {
             //options for dropdown
             valueOptions: options,
 
             //map values(ids) to label for every cell
             valueFormatter: ({ value }) =>
               value && options.find((o) => o.value === value).label,
-          }),
-          ...(c.type === 'date' && {
-            valueFormatter: ({ value }) =>
-              value && new Date(value).toLocaleDateString('en-GB'),
-          }),
+          }
+        }
+
+        const column = await (async () => {
+          switch (c.type) {
+            case 'date':
+              return dateColumn
+            case 'bool':
+              return boolColumn
+            case 'reference':
+            case 'dropdown':
+              return await dropdownColumn(c) //todo reference
+            default:
+              return null
+          }
+        })()
+
+        return {
+          field: c.name,
+          headerName: c.displayName,
+          editable: true,
+          width: 150,
+          ...column,
         }
       })
     )
