@@ -66,7 +66,7 @@ const Table = () => {
               renderCell: ({ value }) => {
                 const option = options.find((o) => o.value === value)
                 return (
-                  <Link to={`../c.table/${option.value}`}>
+                  <Link to={`../${c.referenceTo.name}/${option.value}`}>
                     {value && option.label}
                   </Link>
                 )
