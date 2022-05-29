@@ -13,6 +13,7 @@ const Record = (p) => {
   const [fields, setFields] = useState([])
   const [data, setData] = useState({})
   const navigate = useNavigate()
+  const [pressedButton, setPressedButton] = useState(null)
 
   async function fetchColumns() {
     //fetch display name
@@ -44,29 +45,38 @@ const Record = (p) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(providedData)
+    const action = p.new ? postNew : update
+    action()
+      .then(() => {
+        if (pressedButton == 'submit') navigate(`/table/${tableName}`)
+      })
+      .then(setPressedButton(null))
+  }
+
+  const isEmpty = (obj) => Object.keys(obj).length === 0
+
+  async function postNew() {
+    api.post(`table/${tableName}`, providedData)
+  }
+
+  async function update() {
+    if (isEmpty(providedData)) return
     api
-      .post(`table/${tableName}`, providedData)
-      .then(navigate(`/table/${tableName}`))
-  }
-
-  function postNew() {
-    //TODO
-  }
-
-  function update() {
-    //TODO
+      .put(`table/${tableName}/${data.id}`, providedData)
+      .then(setProvidedData({}))
   }
 
   if (notFound) return <div>Table not found</div>
-  if (!p.new && Object.keys(data).length === 0) return <div>Loading...</div>
+  if (!p.new && isEmpty(data)) return null
+
+  const disabledButtons = !p.new && isEmpty(providedData)
+
   return (
     <div>
       <header
         style={{
           display: 'flex',
           alignItems: 'center',
-          // justifyContent: 'space-between',
         }}
       >
         <IconButton
@@ -110,10 +120,22 @@ const Record = (p) => {
                 },
               }}
             >
-              <Button type="submit" variant="contained">
+              <Button
+                type="submit"
+                disabled={disabledButtons}
+                variant="contained"
+                onClick={() => setPressedButton('submit')}
+              >
                 Submit
               </Button>
-              <Button variant="outlined">Save</Button>
+              <Button
+                type="submit"
+                variant="outlined"
+                disabled={disabledButtons}
+                onClick={() => setPressedButton('save')}
+              >
+                Save
+              </Button>
             </Box>
           </form>
         </Box>

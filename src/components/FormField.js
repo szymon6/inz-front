@@ -63,6 +63,7 @@ const DateField = ({ f, handleChange, data }) => {
 
 const Field = ({ f, handleChange, data }) => (
   <TextField
+    disabled={f.readonly}
     fullWidth
     defaultValue={data}
     label={f.displayName}
@@ -97,8 +98,6 @@ const CheckBoxField = ({ f, handleChange, data }) => {
 }
 
 const FormField = (p) => {
-  console.log(p.data)
-
   const Input = (() => {
     switch (p.f.type) {
       case 'reference':

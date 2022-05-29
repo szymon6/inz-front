@@ -33,14 +33,12 @@ const Table = () => {
 
     const mappedColumns = await Promise.all(
       tableInfo.columns.map(async (c) => {
-        console.log(c)
         const referenceColumn = async (c) => {
           const { data: options } = await api.get(
             c.type == 'dropdown'
               ? `options/dropdown/${c.referenceToDropdownId}`
               : `options/table/${c.referenceToId}`
           )
-          console.log(options)
 
           return {
             type: 'singleSelect',
@@ -77,6 +75,7 @@ const Table = () => {
 
         const dateColumn = {
           type: 'date',
+          width: 120,
           valueFormatter: ({ value }) =>
             value && new Date(value).toLocaleDateString('en-GB'),
         }
@@ -89,9 +88,11 @@ const Table = () => {
 
         const boolColumn = {
           type: 'boolean',
+          width: 60,
         }
         const numberColumn = {
           type: 'number',
+          width: 100,
         }
 
         const column = await (async () => {
@@ -101,12 +102,13 @@ const Table = () => {
             case 'bool':
               return boolColumn
             case 'number':
+            case 'id':
               return numberColumn
             case 'reference':
             case 'dropdown':
               return await referenceColumn(c)
             case null:
-              return await stringColumn
+              return stringColumn
             default:
               return null
           }
@@ -115,8 +117,8 @@ const Table = () => {
         return {
           field: c.name,
           headerName: c.displayName,
-          editable: true,
-          width: 150,
+          editable: !c.readonly,
+          width: 200,
           ...column,
         }
       })
