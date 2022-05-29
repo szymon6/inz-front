@@ -1,4 +1,5 @@
-import { Box, Button, Typography } from '@mui/material'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
@@ -64,9 +65,18 @@ const Record = (p) => {
       <header
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          alignItems: 'center',
+          // justifyContent: 'space-between',
         }}
       >
+        <IconButton
+          color="primary"
+          onClick={() => navigate(`/table/${tableName}`)}
+          edge="start"
+          sx={{ mr: 2 }}
+        >
+          <ArrowBackIosNewIcon />
+        </IconButton>
         <Typography variant="h5" color="initial">
           {tableDisplayName}
         </Typography>
@@ -91,16 +101,19 @@ const Record = (p) => {
               ))}
             </Box>
 
-            <Box>
-              <Button
-                variant="text"
-                color="primary"
-                onClick={() => navigate(`/table/${tableName}`)}
-              >
-                Back
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'end',
+                '& Button': {
+                  ml: 2,
+                },
+              }}
+            >
+              <Button type="submit" variant="contained">
+                Submit
               </Button>
-
-              <Button type="submit">Add</Button>
+              <Button variant="outlined">Save</Button>
             </Box>
           </form>
         </Box>
