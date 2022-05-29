@@ -4,15 +4,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 import FormField from '../../components/FormField'
 
-const New = () => {
-  const { tableName } = useParams()
+const Record = (p) => {
+  const { tableName, id } = useParams()
 
   const [notFound, setNotFound] = useState(false)
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [fields, setFields] = useState([])
+  const [data, setData] = useState({})
   const navigate = useNavigate()
 
-  async function fetch() {
+  async function fetchColumns() {
     //fetch display name
     const { data: tableInfo, error } = await api.get(`table-info/${tableName}`)
     if (error) return setNotFound(true)
@@ -21,28 +22,43 @@ const New = () => {
     setFields(tableInfo.columns)
   }
 
+  async function fetchData() {
+    let { data } = await api.get(`table/${tableName}/${id}`)
+    setData(data)
+  }
+
   useEffect(() => {
-    fetch()
+    fetchColumns()
+    if (!p.new) fetchData()
   }, [])
 
-  const [formData, setFormData] = React.useState({})
+  const [providedData, setProvidedData] = React.useState({})
 
   const handleChange = (key, data) => {
-    setFormData({
-      ...formData,
+    setProvidedData({
+      ...providedData,
       [key]: data,
     })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(formData)
+    console.log(providedData)
     api
-      .post(`table/${tableName}`, formData)
+      .post(`table/${tableName}`, providedData)
       .then(navigate(`/table/${tableName}`))
   }
 
+  function postNew() {
+    //TODO
+  }
+
+  function update() {
+    //TODO
+  }
+
   if (notFound) return <div>Table not found</div>
+  if (!p.new && Object.keys(data).length === 0) return <div>Loading...</div>
   return (
     <div>
       <header
@@ -52,7 +68,7 @@ const New = () => {
         }}
       >
         <Typography variant="h5" color="initial">
-          New record for {tableDisplayName}
+          {tableDisplayName}
         </Typography>
       </header>
       <Box
@@ -66,7 +82,12 @@ const New = () => {
           <form onSubmit={handleSubmit}>
             <Box sx={{ mt: 2 }}>
               {fields.map((f) => (
-                <FormField key={f.id} f={f} handleChange={handleChange} />
+                <FormField
+                  key={f.id}
+                  f={f}
+                  handleChange={handleChange}
+                  data={data[f.name]}
+                />
               ))}
             </Box>
 
@@ -88,4 +109,4 @@ const New = () => {
   )
 }
 
-export default New
+export default Record

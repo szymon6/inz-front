@@ -8,7 +8,7 @@ import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import api from '../api'
 
-const ReferenceField = ({ f, handleChange }) => {
+const ReferenceField = ({ f, handleChange, data }) => {
   const [options, setOptions] = useState([])
   useEffect(() => {
     api
@@ -20,9 +20,11 @@ const ReferenceField = ({ f, handleChange }) => {
       .then(({ data }) => setOptions(data))
   }, [])
 
+  if (!options.length) return null
   return (
     <Autocomplete
       fullWidth
+      defaultValue={options.find((o) => o.value == data)}
       options={options}
       renderInput={(params) => (
         <TextField {...params} label={f.displayName} required={f.required} />
@@ -34,12 +36,13 @@ const ReferenceField = ({ f, handleChange }) => {
   )
 }
 
-const DateField = ({ f, handleChange }) => {
-  const [empty, setEmpty] = useState(true)
+const DateField = ({ f, handleChange, data }) => {
+  const [empty, setEmpty] = useState(!data)
 
   return (
     <TextField
       fullWidth
+      defaultValue={data && data.slice(0, -14)}
       label={f.displayName}
       type="date"
       required={f.required}
@@ -58,9 +61,10 @@ const DateField = ({ f, handleChange }) => {
   )
 }
 
-const Field = ({ f, handleChange }) => (
+const Field = ({ f, handleChange, data }) => (
   <TextField
     fullWidth
+    defaultValue={data}
     label={f.displayName}
     type={f.type}
     required={f.required}
@@ -74,20 +78,27 @@ const Field = ({ f, handleChange }) => (
   />
 )
 
-const CheckBoxField = ({ f, handleChange }) => {
+const CheckBoxField = ({ f, handleChange, data }) => {
   useEffect(() => {
-    handleChange(f.name, false)
+    if (!data) handleChange(f.name, false)
   }, [])
 
   return (
     <FormControlLabel
-      control={<Checkbox onChange={(_, v) => handleChange(f.name, v)} />}
+      control={
+        <Checkbox
+          defaultChecked={data}
+          onChange={(_, v) => handleChange(f.name, v)}
+        />
+      }
       label={f.displayName}
     />
   )
 }
 
 const FormField = (p) => {
+  console.log(p.data)
+
   const Input = (() => {
     switch (p.f.type) {
       case 'reference':
