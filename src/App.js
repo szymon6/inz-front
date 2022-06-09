@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Record from './pages/Dashboard/Record'
 import Table from './pages/Dashboard/Table'
@@ -10,6 +10,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard />}>
+          <Route path="/" element={<Navigate to="table/employee" />}/>
             <Route path="table/:tableName" element={<Table />} />
             <Route path="table/:tableName/new" element={<Record new />} />
             <Route path="table/:tableName/:id" element={<Record />} />
