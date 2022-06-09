@@ -78,12 +78,32 @@ export default function Dashboard() {
 
   const drawerOptions = [
     {
-      name: 'Cars',
-      path: '/table/car',
+      name: 'Certify Employee SNOW',
+      path: '/table/employee_snow_cert/new',
     },
     {
-      name: 'Owners',
-      path: '/table/owner',
+      name: 'Certify Employee',
+      path: '/table/employee_other_cert/new',
+    },
+    {
+      name: 'Employees',
+      path: '/table/employee',
+    },
+    {
+      name: 'SNOW Certs',
+      path: '/table/snow_cert',
+    },
+    {
+      name: 'Other Certs',
+      path: '/table/other_cert',
+    },
+    {
+      name: 'All SNOW Certified',
+      path: '/table/employee_snow_cert',
+    },
+    {
+      name: 'All Other Certified',
+      path: '/table/employee_other_cert',
     },
   ]
 
@@ -133,13 +153,13 @@ export default function Dashboard() {
         </DrawerHeader>
         <Divider />
         <List>
-          {drawerOptions.map((option) => (
+          {drawerOptions.map((option, i) => (
             <Link
               to={option.path}
               style={{ textDecoration: 'none' }}
               key={option.name}
             >
-              <ListItem button>
+              <ListItem divider={i==1 || i==4}button>
                 <ListItemText primary={option.name} />
               </ListItem>
             </Link>

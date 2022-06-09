@@ -56,6 +56,8 @@ const Record = (p) => {
   const isEmpty = (obj) => Object.keys(obj).length === 0
 
   async function postNew() {
+    console.log(`table/${tableName}`)
+    console.log(JSON.stringify(providedData))
     api.post(`table/${tableName}`, providedData)
   }
 
@@ -122,19 +124,19 @@ const Record = (p) => {
             >
               <Button
                 type="submit"
-                disabled={disabledButtons}
-                variant="contained"
-                onClick={() => setPressedButton('submit')}
-              >
-                Submit
-              </Button>
-              <Button
-                type="submit"
                 variant="outlined"
                 disabled={disabledButtons}
                 onClick={() => setPressedButton('save')}
               >
                 Save
+              </Button>
+              <Button
+                type="submit"
+                disabled={disabledButtons}
+                variant="contained"
+                onClick={() => setPressedButton('submit')}
+              >
+                Submit
               </Button>
             </Box>
           </form>

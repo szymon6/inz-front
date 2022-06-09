@@ -39,7 +39,11 @@ const Table = () => {
               ? `options/dropdown/${c.referenceToDropdownId}`
               : `options/table/${c.referenceToId}`
           )
-
+          console.log({
+            field: c.name,
+            headerName: c.displayName,
+            editable: !c.readonly,
+          })
           return {
             type: 'singleSelect',
 
@@ -78,6 +82,10 @@ const Table = () => {
           width: 120,
           valueFormatter: ({ value }) =>
             value && new Date(value).toLocaleDateString('en-GB'),
+
+            ...(c.displayValue && {
+              renderCell: ({ value, id }) => <Link to={`${id}`}>{new Date(value).toLocaleDateString('en-GB')}</Link>,
+            }),
         }
 
         const stringColumn = {
@@ -88,7 +96,7 @@ const Table = () => {
 
         const boolColumn = {
           type: 'boolean',
-          width: 60,
+          width: 100,
         }
         const numberColumn = {
           type: 'number',
@@ -145,6 +153,7 @@ const Table = () => {
     setSelectedRows([])
     setMappedColumns([])
     setRows([])
+    setNotFound(false)
     fetch()
   }, [tableName])
 
