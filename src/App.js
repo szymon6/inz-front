@@ -1,10 +1,18 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Record from './pages/Dashboard/Record'
 import Table from './pages/Dashboard/Table'
 import LoginPage from './pages/LoginPage'
+import User from './store/User'
 
 function App() {
+
+  useEffect(() => {
+    User.fetch()
+  })
+
+
   return (
     <div className="App">
       <BrowserRouter>

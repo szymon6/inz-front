@@ -24,6 +24,7 @@ const Record = (p) => {
     setFields(tableInfo.columns)
   }
 
+
   async function fetchData() {
     let { data } = await api.get(`table/${tableName}/${id}`)
     setData(data)
@@ -32,7 +33,7 @@ const Record = (p) => {
   useEffect(() => {
     fetchColumns()
     if (!p.new) fetchData()
-  }, [])
+  }, [tableName])
 
   const [providedData, setProvidedData] = React.useState({})
 
@@ -83,7 +84,7 @@ const Record = (p) => {
       >
         <IconButton
           color="primary"
-          onClick={() => navigate(`/table/${tableName}`)}
+          onClick={() => navigate(-1)}
           edge="start"
           sx={{ mr: 2 }}
         >

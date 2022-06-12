@@ -14,8 +14,15 @@ import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { Link } from '../styled'
+import logo from '../img/logo.png'
+import User from '../store/User'
+import LogoutIcon from '@mui/icons-material/Logout'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Button from '@mui/material/Button'
+import { Avatar, CardHeader } from '@mui/material'
 
 const drawerWidth = 240
 
@@ -67,6 +74,18 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function Dashboard() {
   const theme = useTheme()
   const [open, setOpen] = React.useState(true)
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const menuOpen = Boolean(anchorEl)
+  const navigate = useNavigate()
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  if (!User.isLoggedIn()) return <Navigate to="/login" />
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -122,8 +141,41 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h7" noWrap component="div">
-            Car Management System
+            Certification Management System
           </Typography>
+
+          <Box
+            sx={{
+              ml: 'auto',
+              color: 'white',
+            }}
+          >
+            <CardHeader
+              sx={{ cursor: 'pointer' }}
+              avatar={<Avatar sx={{ width: 30, height: 30 }}>{User.val.username.charAt(0)}</Avatar>}
+              title={User.val.username}
+              onClick={handleClick}
+            />
+
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={menuOpen}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  User.logout()
+                  navigate('/login')
+                }}
+              >
+                <LogoutIcon /> Logout
+              </MenuItem>
+            </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -141,7 +193,7 @@ export default function Dashboard() {
       >
         <DrawerHeader>
           <Link to="/" style={{ marginRight: 'auto', textDecoration: 'none' }}>
-            <Typography variant="h5">Car Corp</Typography>
+            <img src={logo} alt="logo" style={{ maxWidth: '100%' }} />
           </Link>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? (
@@ -159,7 +211,7 @@ export default function Dashboard() {
               style={{ textDecoration: 'none' }}
               key={option.name}
             >
-              <ListItem divider={i==1 || i==4}button>
+              <ListItem divider={i == 1 || i == 4} button>
                 <ListItemText primary={option.name} />
               </ListItem>
             </Link>
