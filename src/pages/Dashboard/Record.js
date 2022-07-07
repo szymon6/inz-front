@@ -32,7 +32,7 @@ const Record = (p) => {
   useEffect(() => {
     fetchColumns()
     if (!p.new) fetchData()
-  }, [tableName])
+  }, [tableName, id])
 
   const [providedData, setProvidedData] = React.useState({})
 
@@ -47,16 +47,31 @@ const Record = (p) => {
     e.preventDefault()
     const action = p.new ? postNew : update
     action()
-      .then(() => {
+      .then((id) => {
+        console.log(id)
         if (pressedButton == 'submit') navigate(`/table/${tableName}`)
+        else if (pressedButton == 'save' && p.new)
+          navigate(`/table/${tableName}/${id}`)
       })
       .then(setPressedButton(null))
   }
 
+  /*
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const action = p.new ? postNew : update
+    action().then(() => {
+      if (pressedButton == 'submit') navigate(`/table/${tableName}`)
+      setPressedButton(null)
+    })
+  }
+
+  */
   const isEmpty = (obj) => Object.keys(obj).length === 0
 
   async function postNew() {
-    api.post(`table/${tableName}`, providedData)
+    const { data } = await api.post(`table/${tableName}`, providedData)
+    return data && data.id
   }
 
   async function update() {
@@ -81,7 +96,7 @@ const Record = (p) => {
       >
         <IconButton
           color="primary"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/table/${tableName}`)}
           edge="start"
           sx={{ mr: 2 }}
         >
