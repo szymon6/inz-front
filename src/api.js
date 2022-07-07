@@ -11,22 +11,20 @@ async function send(endpoint, method, body) {
   let data
   let error
 
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token')
 
-  try {
-    const response = await axios({
-      method,
-      url: `http://localhost:3100/${endpoint}`,
-      ...(body && { data: body }),
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { token }),
-      },
-    })
-    data = response.data
-  } catch (e) {
-    error = e.response
-  }
+  await axios({
+    method,
+    url: `http://localhost:3100/${endpoint}`,
+    ...(body && { data: body }),
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { token }),
+    },
+  })
+    .then((response) => (data = response.data)) //if we got proper response(so not 4xx or 5xx), we care only about data
+    .catch((e) => (error = e.response))
+
   return { data, error }
 }
 

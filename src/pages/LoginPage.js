@@ -1,32 +1,29 @@
 import { ThemeProvider } from '@emotion/react'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { Alert, createTheme, CssBaseline } from '@mui/material'
-import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import Container from '@mui/material/Container'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import Link from '@mui/material/Link'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { observer } from 'mobx-react'
-import * as React from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Navigate } from 'react-router-dom'
-import User from '../store/User'
 import logo from '../img/logo.png'
+import User from '../store/User'
 
 const SignIn = observer(() => {
   const { register, handleSubmit, reset } = useForm()
-  const [error, setError] = React.useState(false)
+  const [error, setError] = useState(false)
+  const [remember, setRemember] = useState(false)
 
   if (User.isLoggedIn()) return <Navigate to="/" />
 
   async function submit({ username, pass }) {
-    const success = await User.login(username, pass)
+    const success = await User.login(username, pass, remember)
     if (!success) setError(true)
-
     reset()
   }
 
@@ -50,9 +47,8 @@ const SignIn = observer(() => {
             alignItems: 'center',
           }}
         >
-       
-          <img src={logo} alt="logo" style={{maxWidth: '100%'}} />
-       
+          <img src={logo} alt="logo" style={{ maxWidth: '100%' }} />
+
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -61,7 +57,7 @@ const SignIn = observer(() => {
               margin="normal"
               required
               fullWidth
-              label="Email Address"
+              label="Username"
               autoComplete="email"
               autoFocus
               {...register('username')}
@@ -82,7 +78,13 @@ const SignIn = observer(() => {
             )}
 
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                  color="primary"
+                />
+              }
               label="Remember me"
             />
 
@@ -94,11 +96,6 @@ const SignIn = observer(() => {
             >
               Sign In
             </Button>
-            <Box>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Box>
           </Box>
         </Box>
       </Container>

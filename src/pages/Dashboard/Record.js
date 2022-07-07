@@ -24,7 +24,6 @@ const Record = (p) => {
     setFields(tableInfo.columns)
   }
 
-
   async function fetchData() {
     let { data } = await api.get(`table/${tableName}/${id}`)
     setData(data)
@@ -57,8 +56,6 @@ const Record = (p) => {
   const isEmpty = (obj) => Object.keys(obj).length === 0
 
   async function postNew() {
-    console.log(`table/${tableName}`)
-    console.log(JSON.stringify(providedData))
     api.post(`table/${tableName}`, providedData)
   }
 

@@ -19,10 +19,12 @@ import { Link } from '../styled'
 import logo from '../img/logo.png'
 import User from '../store/User'
 import LogoutIcon from '@mui/icons-material/Logout'
+import PasswordIcon from '@mui/icons-material/Password'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
-import { Avatar, CardHeader } from '@mui/material'
+import { Avatar, CardHeader, Dialog } from '@mui/material'
+import ChangePassDialog from '../components/ChangePassDialog'
 
 const drawerWidth = 240
 
@@ -78,6 +80,8 @@ export default function Dashboard() {
   const menuOpen = Boolean(anchorEl)
   const navigate = useNavigate()
 
+  const [passChangeDialogOpened, setPassChangeDialogOpened] = React.useState(false)
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -128,6 +132,7 @@ export default function Dashboard() {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      {passChangeDialogOpened && <ChangePassDialog handleClose={()=>setPassChangeDialogOpened(false)}/>} 
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -168,12 +173,21 @@ export default function Dashboard() {
             >
               <MenuItem
                 onClick={() => {
+                  handleClose()
+                  setPassChangeDialogOpened(true)
+                }}
+              >
+                <PasswordIcon /> Change Password
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
                   User.logout()
                   navigate('/login')
                 }}
               >
                 <LogoutIcon /> Logout
               </MenuItem>
+
             </Menu>
           </Box>
         </Toolbar>

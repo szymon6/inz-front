@@ -179,7 +179,6 @@ const Table = () => {
         sx={{ height: '75vh' }}
         rows={rows}
         columns={mappedColumns}
-        loading={rows.length === 0 || mappedColumns.length === 0}
         rowHeight={40}
         pageSize={100}
         checkboxSelection

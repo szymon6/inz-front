@@ -12,23 +12,27 @@ class User {
     const { data, error } = await api.get('auth/user')
     if (!error) this.val = data
 
-    console.log(JSON.stringify(this.val));
+    console.log(JSON.stringify(this.val))
   }
 
-  async login(username, password) {
+  async login(username, password, remember) {
     const { data, error } = await api.post('auth/login', { username, password })
     if (error) return false
 
     this.val = data.user
 
-    console.log(JSON.stringify(this.val));
-    localStorage.setItem('token', data.token)
+    console.log(JSON.stringify(this.val))
+
+    if (remember) localStorage.setItem('token', data.token)
+    else sessionStorage.setItem('token', data.token)
+
     return true
   }
 
   async logout() {
     this.val = null
     localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
   }
 
   isLoggedIn() {
