@@ -1,6 +1,9 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import LogoutIcon from '@mui/icons-material/Logout'
 import MenuIcon from '@mui/icons-material/Menu'
+import PasswordIcon from '@mui/icons-material/Password'
+import { Avatar, CardHeader } from '@mui/material'
 import MuiAppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -10,21 +13,17 @@ import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import * as React from 'react'
 import { Navigate, Outlet, useNavigate } from 'react-router-dom'
-import { Link } from '../styled'
+import ChangePassDialog from '../components/ChangePassDialog'
 import logo from '../img/logo.png'
 import User from '../store/User'
-import LogoutIcon from '@mui/icons-material/Logout'
-import PasswordIcon from '@mui/icons-material/Password'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Button from '@mui/material/Button'
-import { Avatar, CardHeader, Dialog } from '@mui/material'
-import ChangePassDialog from '../components/ChangePassDialog'
+import { Link } from '../styled'
 
 const drawerWidth = 240
 
@@ -80,7 +79,8 @@ export default function Dashboard() {
   const menuOpen = Boolean(anchorEl)
   const navigate = useNavigate()
 
-  const [passChangeDialogOpened, setPassChangeDialogOpened] = React.useState(false)
+  const [passChangeDialogOpened, setPassChangeDialogOpened] =
+    React.useState(false)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -107,6 +107,17 @@ export default function Dashboard() {
     {
       name: 'Certify Employee',
       path: '/table/employee_other_cert/new',
+      divider: true,
+    },
+
+    {
+      name: 'All SNOW Certified',
+      path: '/table/employee_snow_cert',
+    },
+    {
+      name: 'All Other Certified',
+      path: '/table/employee_other_cert',
+      divider: true,
     },
     {
       name: 'Employees',
@@ -120,19 +131,15 @@ export default function Dashboard() {
       name: 'Other Certs',
       path: '/table/other_cert',
     },
-    {
-      name: 'All SNOW Certified',
-      path: '/table/employee_snow_cert',
-    },
-    {
-      name: 'All Other Certified',
-      path: '/table/employee_other_cert',
-    },
   ]
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {passChangeDialogOpened && <ChangePassDialog handleClose={()=>setPassChangeDialogOpened(false)}/>} 
+      {passChangeDialogOpened && (
+        <ChangePassDialog
+          handleClose={() => setPassChangeDialogOpened(false)}
+        />
+      )}
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -157,7 +164,11 @@ export default function Dashboard() {
           >
             <CardHeader
               sx={{ cursor: 'pointer' }}
-              avatar={<Avatar sx={{ width: 30, height: 30 }}>{User.val.username.charAt(0)}</Avatar>}
+              avatar={
+                <Avatar sx={{ width: 30, height: 30 }}>
+                  {User.val.username.charAt(0)}
+                </Avatar>
+              }
               title={User.val.username}
               onClick={handleClick}
             />
@@ -187,7 +198,6 @@ export default function Dashboard() {
               >
                 <LogoutIcon /> Logout
               </MenuItem>
-
             </Menu>
           </Box>
         </Toolbar>
@@ -219,14 +229,14 @@ export default function Dashboard() {
         </DrawerHeader>
         <Divider />
         <List>
-          {drawerOptions.map((option, i) => (
+          {drawerOptions.map((item, i) => (
             <Link
-              to={option.path}
+              to={item.path}
               style={{ textDecoration: 'none' }}
-              key={option.name}
+              key={item.name}
             >
-              <ListItem divider={i == 1 || i == 4} button>
-                <ListItemText primary={option.name} />
+              <ListItem divider={item.divider} button>
+                <ListItemText primary={item.name} />
               </ListItem>
             </Link>
           ))}
