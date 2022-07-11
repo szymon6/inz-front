@@ -109,7 +109,6 @@ export default function Dashboard() {
       path: '/table/employee_other_cert/new',
       divider: true,
     },
-
     {
       name: 'All SNOW Certified',
       path: '/table/employee_snow_cert',
