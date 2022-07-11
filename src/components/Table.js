@@ -4,16 +4,14 @@ import { IconButton, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
-import { Link as UnstyledLink, useNavigate, useParams } from 'react-router-dom'
-import api from '../../api'
+import { Link as UnstyledLink, useNavigate } from 'react-router-dom'
+import api from '../api'
 
 const Link = styled(UnstyledLink)({
   color: 'black',
 })
 
-const Table = () => {
-  const { tableName } = useParams()
-
+const Table = ({ name: tableName, filter }) => {
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [rows, setRows] = useState([])
   const [mappedColumns, setMappedColumns] = useState([])
@@ -83,9 +81,13 @@ const Table = () => {
           valueFormatter: ({ value }) =>
             value && new Date(value).toLocaleDateString('en-GB'),
 
-            ...(c.displayValue && {
-              renderCell: ({ value, id }) => <Link to={`${id}`}>{new Date(value).toLocaleDateString('en-GB')}</Link>,
-            }),
+          ...(c.displayValue && {
+            renderCell: ({ value, id }) => (
+              <Link to={`${id}`}>
+                {new Date(value).toLocaleDateString('en-GB')}
+              </Link>
+            ),
+          }),
         }
 
         const stringColumn = {
@@ -170,7 +172,10 @@ const Table = () => {
         <Typography variant="h5" color="initial">
           {tableDisplayName}
         </Typography>
-        <IconButton color="primary" onClick={() => navigate('new')}>
+        <IconButton
+          color="primary"
+          onClick={() => navigate(`/table/${tableName}/new`)}
+        >
           <AddBoxIcon fontSize="large" />
         </IconButton>
       </header>

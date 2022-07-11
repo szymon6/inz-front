@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 import FormField from '../../components/FormField'
+import LinkedList from '../../components/LinkedList'
 
-const Record = (p) => {
+const Record = ({ isNew }) => {
   const { tableName, id } = useParams()
 
   const [notFound, setNotFound] = useState(false)
@@ -30,8 +31,14 @@ const Record = (p) => {
   }
 
   useEffect(() => {
+    setNotFound(false)
+    setTableDisplayName('')
+    setFields([])
+    setData([])
+    setPressedButton(null)
+
     fetchColumns()
-    if (!p.new) fetchData()
+    if (!isNew) fetchData()
   }, [tableName, id])
 
   const [providedData, setProvidedData] = React.useState({})
@@ -45,28 +52,17 @@ const Record = (p) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const action = p.new ? postNew : update
+    const action = isNew ? postNew : update
     action()
       .then((id) => {
         console.log(id)
         if (pressedButton == 'submit') navigate(`/table/${tableName}`)
-        else if (pressedButton == 'save' && p.new)
+        else if (pressedButton == 'save' && isNew)
           navigate(`/table/${tableName}/${id}`)
       })
       .then(setPressedButton(null))
   }
 
-  /*
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const action = p.new ? postNew : update
-    action().then(() => {
-      if (pressedButton == 'submit') navigate(`/table/${tableName}`)
-      setPressedButton(null)
-    })
-  }
-
-  */
   const isEmpty = (obj) => Object.keys(obj).length === 0
 
   async function postNew() {
@@ -82,9 +78,9 @@ const Record = (p) => {
   }
 
   if (notFound) return <div>Table not found</div>
-  if (!p.new && isEmpty(data)) return null
+  if (!isNew && isEmpty(data)) return null
 
-  const disabledButtons = !p.new && isEmpty(providedData)
+  const disabledButtons = !isNew && isEmpty(providedData)
 
   return (
     <div>
@@ -155,6 +151,8 @@ const Record = (p) => {
           </form>
         </Box>
       </Box>
+      <br />
+      {!isNew && <LinkedList forTable={tableName} />}
     </div>
   )
 }
