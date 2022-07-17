@@ -56,7 +56,7 @@ const Table = ({ name: tableName, filter }) => {
             ...(c.type != 'reference' &&
               c.displayValue && {
                 renderCell: ({ value, id }) => (
-                  <Link to={`${id}`}>
+                  <Link to={`../table/${tableName}/${id}`}>
                     {value && options.find((o) => o.value === value).label}
                   </Link>
                 ),
@@ -83,7 +83,7 @@ const Table = ({ name: tableName, filter }) => {
 
           ...(c.displayValue && {
             renderCell: ({ value, id }) => (
-              <Link to={`${id}`}>
+              <Link to={`../table/${tableName}/${id}`}>
                 {new Date(value).toLocaleDateString('en-GB')}
               </Link>
             ),
@@ -92,7 +92,9 @@ const Table = ({ name: tableName, filter }) => {
 
         const stringColumn = {
           ...(c.displayValue && {
-            renderCell: ({ value, id }) => <Link to={`${id}`}>{value}</Link>,
+            renderCell: ({ value, id }) => (
+              <Link to={`../table/${tableName}/${id}`}>{value}</Link>
+            ),
           }),
         }
 
@@ -136,7 +138,12 @@ const Table = ({ name: tableName, filter }) => {
     setMappedColumns(mappedColumns)
 
     // Fetch rowss
-    let { data: rows } = await api.get(`table/${tableName}`)
+    let { data: rows } = filter
+      ? await api.get(`linked/${filter}`)
+      : await api.get(`table/${tableName}`)
+
+    console.log(filter)
+    console.log(rows)
     setRows(rows)
   }
 
@@ -163,22 +170,24 @@ const Table = ({ name: tableName, filter }) => {
 
   return (
     <>
-      <header
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Typography variant="h5" color="initial">
-          {tableDisplayName}
-        </Typography>
-        <IconButton
-          color="primary"
-          onClick={() => navigate(`/table/${tableName}/new`)}
+      {!filter && (
+        <header
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
         >
-          <AddBoxIcon fontSize="large" />
-        </IconButton>
-      </header>
+          <Typography variant="h5" color="initial">
+            {tableDisplayName}
+          </Typography>
+          <IconButton
+            color="primary"
+            onClick={() => navigate(`/table/${tableName}/new`)}
+          >
+            <AddBoxIcon fontSize="large" />
+          </IconButton>
+        </header>
+      )}
 
       <DataGrid
         sx={{ height: '75vh' }}

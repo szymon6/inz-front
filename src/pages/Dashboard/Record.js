@@ -152,7 +152,7 @@ const Record = ({ isNew }) => {
         </Box>
       </Box>
       <br />
-      {!isNew && <LinkedList forTable={tableName} />}
+      {!isNew && <LinkedList table={tableName} id={id} />}
     </div>
   )
 }
