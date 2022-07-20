@@ -56,7 +56,7 @@ const Table = ({ name: tableName, filter }) => {
             ...(c.type != 'reference' &&
               c.displayValue && {
                 renderCell: ({ value, id }) => (
-                  <Link to={`../table/${tableName}/${id}`}>
+                  <Link to={`/table/${tableName}/${id}`}>
                     {value && options.find((o) => o.value === value).label}
                   </Link>
                 ),
@@ -66,7 +66,7 @@ const Table = ({ name: tableName, filter }) => {
               renderCell: ({ value }) => {
                 const option = options.find((o) => o.value === value)
                 return (
-                  <Link to={`../table/${c.referenceTo.name}/${option.value}`}>
+                  <Link to={`/table/${c.referenceTo.name}/${option.value}`}>
                     {value && option.label}
                   </Link>
                 )
@@ -83,7 +83,7 @@ const Table = ({ name: tableName, filter }) => {
 
           ...(c.displayValue && {
             renderCell: ({ value, id }) => (
-              <Link to={`../table/${tableName}/${id}`}>
+              <Link to={`/table/${tableName}/${id}`}>
                 {new Date(value).toLocaleDateString('en-GB')}
               </Link>
             ),
@@ -93,7 +93,7 @@ const Table = ({ name: tableName, filter }) => {
         const stringColumn = {
           ...(c.displayValue && {
             renderCell: ({ value, id }) => (
-              <Link to={`../table/${tableName}/${id}`}>{value}</Link>
+              <Link to={`/table/${tableName}/${id}`}>{value}</Link>
             ),
           }),
         }
