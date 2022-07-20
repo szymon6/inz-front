@@ -55,7 +55,6 @@ const Record = ({ isNew }) => {
     const action = isNew ? postNew : update
     action()
       .then((id) => {
-        console.log(id)
         if (pressedButton == 'submit') navigate(`/table/${tableName}`)
         else if (pressedButton == 'save' && isNew)
           navigate(`/table/${tableName}/${id}`)
@@ -81,7 +80,7 @@ const Record = ({ isNew }) => {
   if (!isNew && isEmpty(data)) return null
 
   const disabledButtons = !isNew && isEmpty(providedData)
-
+  console.log(fields)
   return (
     <div>
       <header
@@ -92,7 +91,7 @@ const Record = ({ isNew }) => {
       >
         <IconButton
           color="primary"
-          onClick={() => navigate(`/table/${tableName}`)}
+          onClick={() => navigate(-1)}
           edge="start"
           sx={{ mr: 2 }}
         >
@@ -112,14 +111,17 @@ const Record = ({ isNew }) => {
         <Box minWidth="400px" width="40%">
           <form onSubmit={handleSubmit}>
             <Box sx={{ mt: 2 }}>
-              {fields.map((f) => (
-                <FormField
-                  key={f.id}
-                  f={f}
-                  handleChange={handleChange}
-                  data={data[f.name]}
-                />
-              ))}
+              {fields.map((f) => {
+                console.log('ID ' + f.id)
+                return (
+                  <FormField
+                    key={f.id}
+                    f={f}
+                    handleChange={handleChange}
+                    data={data[f.name]}
+                  />
+                )
+              })}
             </Box>
 
             <Box

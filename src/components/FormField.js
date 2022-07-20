@@ -1,19 +1,13 @@
-import ListAlt from '@mui/icons-material/ListAlt'
 import {
   Autocomplete,
   Checkbox,
   FormControlLabel,
-  IconButton,
   TextField,
-  Tooltip,
 } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import api from '../api'
-
 const ReferenceField = ({ f, handleChange, data }) => {
-  const navigate = useNavigate()
   const [options, setOptions] = useState([])
   useEffect(() => {
     api
@@ -24,8 +18,6 @@ const ReferenceField = ({ f, handleChange, data }) => {
       )
       .then(({ data }) => setOptions(data))
   }, [])
-
-  console.log(f)
 
   if (!options.length) return null
   return (
@@ -47,17 +39,7 @@ const ReferenceField = ({ f, handleChange, data }) => {
           top: '20%',
           left: '100%',
         }}
-      >
-        <Tooltip title="Open table">
-          <IconButton
-            onClick={() =>
-              window.open(`/table/${f.referenceTo.name}`, '_blank')
-            }
-          >
-            <ListAlt />
-          </IconButton>
-        </Tooltip>
-      </Box>
+      ></Box>
     </Box>
   )
 }

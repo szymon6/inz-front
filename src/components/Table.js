@@ -37,11 +37,7 @@ const Table = ({ name: tableName, filter }) => {
               ? `options/dropdown/${c.referenceToDropdownId}`
               : `options/table/${c.referenceToId}`
           )
-          console.log({
-            field: c.name,
-            headerName: c.displayName,
-            editable: !c.readonly,
-          })
+
           return {
             type: 'singleSelect',
 
@@ -142,8 +138,6 @@ const Table = ({ name: tableName, filter }) => {
       ? await api.get(`linked/${filter}`)
       : await api.get(`table/${tableName}`)
 
-    console.log(filter)
-    console.log(rows)
     setRows(rows)
   }
 

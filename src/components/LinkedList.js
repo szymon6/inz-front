@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Tab, Tabs } from '@mui/material'
 import * as React from 'react'
 import Table from './Table'
 
@@ -13,11 +13,7 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   )
 }
@@ -42,8 +38,8 @@ const TabWindow = ({ tabs }) => {
         </Tabs>
       </Box>
       {tabs.map((tab, i) => (
-        <TabPanel value={value} index={i}>
-          <Table key={tab.table} name={tab.table} filter={tab.filter} />
+        <TabPanel key={tab.table} value={value} index={i}>
+          <Table name={tab.table} filter={tab.filter} />
         </TabPanel>
       ))}
     </>
@@ -63,7 +59,7 @@ export default function LinkedList({ table, id }) {
             },
           ]}
         />
-      ) //TODO filtering
+      )
     case 'other_cert':
       return (
         <TabWindow
@@ -75,7 +71,7 @@ export default function LinkedList({ table, id }) {
             },
           ]}
         />
-      ) //TODO filtering
+      )
     case 'employee':
       return (
         <TabWindow
@@ -92,7 +88,7 @@ export default function LinkedList({ table, id }) {
             },
           ]}
         />
-      ) //TODO filtering, two tabs https://mui.com/material-ui/react-tabs/ - Table name="snow_cert", Table name="other_cert"
+      )
     default:
       return null
   }
