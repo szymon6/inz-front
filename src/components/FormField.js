@@ -7,6 +7,7 @@ import {
 import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import api from '../api'
+import OpenTableButton from './OpenTableButton'
 const ReferenceField = ({ f, handleChange, data }) => {
   const [options, setOptions] = useState([])
   useEffect(() => {
@@ -20,6 +21,7 @@ const ReferenceField = ({ f, handleChange, data }) => {
   }, [])
 
   if (!options.length) return null
+  console.log(f)
   return (
     <Box sx={{ position: 'relative' }}>
       <Autocomplete
@@ -39,7 +41,11 @@ const ReferenceField = ({ f, handleChange, data }) => {
           top: '20%',
           left: '100%',
         }}
-      ></Box>
+      >
+        {f.type == 'reference' && (
+          <OpenTableButton table={f.referenceTo.name} />
+        )}
+      </Box>
     </Box>
   )
 }
