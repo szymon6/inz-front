@@ -3,6 +3,7 @@ import api from '../api'
 
 class User {
   val = null
+  loading = true
 
   constructor() {
     makeAutoObservable(this)
@@ -11,8 +12,7 @@ class User {
   async fetch() {
     const { data, error } = await api.get('auth/user')
     if (!error) this.val = data
-
-    console.log(JSON.stringify(this.val))
+    this.loading = false
   }
 
   async login(username, password, remember) {
@@ -20,8 +20,6 @@ class User {
     if (error) return false
 
     this.val = data.user
-
-    console.log(JSON.stringify(this.val))
 
     if (remember) localStorage.setItem('token', data.token)
     else sessionStorage.setItem('token', data.token)

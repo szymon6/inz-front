@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import { observer } from 'mobx-react-lite'
 import * as React from 'react'
 import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import ChangePassDialog from '../components/ChangePassDialog'
@@ -72,7 +73,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }))
 
-export default function Dashboard() {
+const Dashboard = observer(() => {
   const theme = useTheme()
   const [open, setOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -89,7 +90,8 @@ export default function Dashboard() {
     setAnchorEl(null)
   }
 
-  if (!User.isLoggedIn()) return <Navigate to="/login" />
+  if (User.loading) return null
+  else if (!User.isLoggedIn()) return <Navigate to="/login" />
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -247,4 +249,6 @@ export default function Dashboard() {
       </Main>
     </Box>
   )
-}
+})
+
+export default Dashboard
