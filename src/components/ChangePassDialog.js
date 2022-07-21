@@ -18,7 +18,7 @@ export default function ChangePassDialog({ handleClose }) {
       oldPass,
       newPass,
     })
-    console.log(error)
+
     if (error && error.status == '401') alert('bad password')
     else if (error) alert('error')
     else if (!error) {

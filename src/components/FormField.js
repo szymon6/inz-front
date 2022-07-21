@@ -8,6 +8,7 @@ import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import api from '../api'
 import OpenTableButton from './OpenTableButton'
+
 const ReferenceField = ({ f, handleChange, data }) => {
   const [options, setOptions] = useState([])
   useEffect(() => {
@@ -21,7 +22,6 @@ const ReferenceField = ({ f, handleChange, data }) => {
   }, [])
 
   if (!options.length) return null
-  console.log(f)
   return (
     <Box sx={{ position: 'relative' }}>
       <Autocomplete
@@ -95,7 +95,7 @@ const Field = ({ f, handleChange, data }) => (
 
 const CheckBoxField = ({ f, handleChange, data }) => {
   useEffect(() => {
-    if (!data) handleChange(f.name, false)
+    if (data == null) handleChange(f.name, false)
   }, [])
 
   return (

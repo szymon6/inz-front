@@ -67,7 +67,7 @@ const Record = ({ isNew }) => {
 
   async function postNew() {
     const { data } = await api.post(`table/${tableName}`, providedData)
-    return data && data.id
+    return data && data.id //todo data?.id
   }
 
   async function update() {
@@ -81,7 +81,7 @@ const Record = ({ isNew }) => {
   if (!isNew && isEmpty(data)) return null
 
   const disabledButtons = !isNew && isEmpty(providedData)
-  console.log(fields)
+
   return (
     <div>
       <header
@@ -114,7 +114,6 @@ const Record = ({ isNew }) => {
           <form onSubmit={handleSubmit}>
             <Box sx={{ mt: 2 }}>
               {fields.map((f) => {
-                console.log('ID ' + f.id)
                 return (
                   <FormField
                     key={f.id}
