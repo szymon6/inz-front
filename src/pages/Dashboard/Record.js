@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api'
 import FormField from '../../components/FormField'
 import LinkedList from '../../components/LinkedList'
-import OpenTableButton from '../../components/OpenTableButton'
 
 const Record = ({ isNew }) => {
   const { tableName, id } = useParams()
@@ -81,7 +80,7 @@ const Record = ({ isNew }) => {
   if (!isNew && isEmpty(data)) return null
 
   const disabledButtons = !isNew && isEmpty(providedData)
-
+  console.log(window.history.action)
   return (
     <div>
       <header
@@ -101,7 +100,6 @@ const Record = ({ isNew }) => {
         <Typography variant="h5" color="initial">
           {tableDisplayName}
         </Typography>
-        <OpenTableButton table={tableName} />
       </header>
       <Box
         sx={{

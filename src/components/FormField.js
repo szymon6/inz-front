@@ -7,7 +7,11 @@ import {
 import { Box } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import api from '../api'
-import OpenTableButton from './OpenTableButton'
+import {
+  EditDropdownButton,
+  OpenRecordButton,
+  OpenTableButton,
+} from './RecordButtons'
 
 const ReferenceField = ({ f, handleChange, data }) => {
   const [options, setOptions] = useState([])
@@ -42,8 +46,13 @@ const ReferenceField = ({ f, handleChange, data }) => {
           left: '100%',
         }}
       >
-        {f.type == 'reference' && (
-          <OpenTableButton table={f.referenceTo.name} />
+        {f.type == 'reference' ? (
+          <Box sx={{ display: 'flex' }}>
+            <OpenRecordButton table={f.referenceTo.name} id={data} />
+            <OpenTableButton table={f.referenceTo.name} />
+          </Box>
+        ) : (
+          <EditDropdownButton />
         )}
       </Box>
     </Box>

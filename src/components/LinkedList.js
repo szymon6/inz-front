@@ -39,7 +39,7 @@ const TabWindow = ({ tabs }) => {
       </Box>
       {tabs.map((tab, i) => (
         <TabPanel key={tab.table} value={value} index={i}>
-          <Table name={tab.table} filter={tab.filter} />
+          <Table name={tab.table} customURL={tab.url} />
         </TabPanel>
       ))}
     </>
@@ -55,7 +55,7 @@ export default function LinkedList({ table, id }) {
             {
               table: 'employee',
               label: 'Employees',
-              filter: `snow_cert/${id}/employees`,
+              url: `linked/snow_cert/${id}/employees`,
             },
           ]}
         />
@@ -67,7 +67,7 @@ export default function LinkedList({ table, id }) {
             {
               table: 'employee',
               label: 'Employees',
-              filter: `other_cert/${id}/employees`,
+              url: `linked/other_cert/${id}/employees`,
             },
           ]}
         />
@@ -79,12 +79,12 @@ export default function LinkedList({ table, id }) {
             {
               table: 'snow_cert',
               label: 'Snow Certs',
-              filter: `employee/${id}/snow_certs/`,
+              url: `linked/employee/${id}/snow_certs/`,
             },
             {
               table: 'other_cert',
               label: 'Other Certs',
-              filter: `employee/${id}/other_certs/`,
+              url: `linked/employee/${id}/other_certs/`,
             },
           ]}
         />
