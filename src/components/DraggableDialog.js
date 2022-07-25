@@ -9,7 +9,7 @@ export default function EditDropdownDialog({ close }) {
   return (
     <div>
       <Dialog open={true} onClose={close}>
-        <DialogTitle style={{ cursor: 'move' }}>Subscribe</DialogTitle>
+        <DialogTitle>Subscribe</DialogTitle>
         <DialogContent>
           <Table name="role" dropdown />
         </DialogContent>
