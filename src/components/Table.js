@@ -21,143 +21,128 @@ const Table = ({ name, dropdown, customURL }) => {
 
   const navigate = useNavigate()
 
-  const type = dropdown ? 'dropdown' : 'table'
-
   async function fetch() {
     //Fetch table info
 
     //display name
-    if (!dropdown) {
-      const { data: tableInfo, error } = await api.get(`${type}-info/${name}`)
-      if (error) return setNotFound(true)
-      setTableDisplayName(tableInfo.displayName)
 
-      setColumns(
-        await Promise.all(
-          tableInfo.columns.map(async (c) => {
-            const referenceColumn = async (c) => {
-              const { data: options } = await api.get(
-                c.type == 'dropdown'
-                  ? `options/dropdown/${c.referenceToDropdownId}`
-                  : `options/table/${c.referenceToId}`
-              )
+    const { data: tableInfo, error } = dropdown
+      ? await api.get(`dropdown-info`)
+      : await api.get(`table-info/${name}`)
+    if (error) return setNotFound(true)
+    setTableDisplayName(tableInfo.displayName)
 
-              return {
-                type: 'singleSelect',
-
-                //options for dropdown
-                valueOptions: options,
-
-                //map values(ids) to label for every cell
-                valueFormatter: ({ value }) =>
-                  value && options.find((o) => o.value === value).label,
-
-                //if its display value, change it to link
-                ...(c.type != 'reference' &&
-                  c.displayValue && {
-                    renderCell: ({ value, id }) => (
-                      <Link to={`/table/${name}/${id}`}>
-                        {value && options.find((o) => o.value === value).label}
-                      </Link>
-                    ),
-                  }),
-                //the same, but foreign table
-                ...(c.type == 'reference' && {
-                  renderCell: ({ value }) => {
-                    const option = options.find((o) => o.value === value)
-                    return (
-                      <Link to={`/table/${c.referenceTo.name}/${option.value}`}>
-                        {value && option.label}
-                      </Link>
-                    )
-                  },
-                }),
-              }
-            }
-
-            const dateColumn = {
-              type: 'date',
-              width: 120,
-              valueFormatter: ({ value }) =>
-                value && new Date(value).toLocaleDateString('en-GB'),
-
-              ...(c.displayValue && {
-                renderCell: ({ value, id }) => (
-                  <Link to={`/table/${name}/${id}`}>
-                    {new Date(value).toLocaleDateString('en-GB')}
-                  </Link>
-                ),
-              }),
-            }
-
-            const stringColumn = {
-              ...(c.displayValue && {
-                renderCell: ({ value, id }) => (
-                  <Link to={`/table/${name}/${id}`}>{value}</Link>
-                ),
-              }),
-            }
-
-            const boolColumn = {
-              type: 'boolean',
-              width: 100,
-            }
-            const numberColumn = {
-              type: 'number',
-              width: 100,
-            }
-
-            const column = await (async () => {
-              switch (c.type) {
-                case 'date':
-                  return dateColumn
-                case 'bool':
-                  return boolColumn
-                case 'number':
-                case 'id':
-                  return numberColumn
-                case 'reference':
-                case 'dropdown':
-                  return await referenceColumn(c)
-                case null:
-                  return stringColumn
-                default:
-                  return null
-              }
-            })()
+    setColumns(
+      await Promise.all(
+        tableInfo.columns.map(async (c) => {
+          const referenceColumn = async (c) => {
+            const { data: options } = await api.get(
+              c.type == 'dropdown'
+                ? `options/dropdown/${c.referenceToDropdownId}`
+                : `options/table/${c.referenceToId}`
+            )
 
             return {
-              field: c.name,
-              headerName: c.displayName,
-              editable: !c.readonly,
-              width: 200,
-              ...column,
-            }
-          })
-        )
-      )
+              type: 'singleSelect',
 
-      // Fetch rowss
-      let { data: rows } = customURL
-        ? await api.get(customURL)
-        : await api.get(`table/${name}`)
-      setRows(rows)
-    } else {
-      setColumns([
-        {
-          field: 'id',
-          headerName: 'ID',
-          editable: false,
-          width: 100,
-        },
-        {
-          field: 'value',
-          headerName: 'VALUE',
-          editable: true,
-          width: 200,
-        },
-      ])
-    }
+              //options for dropdown
+              valueOptions: options,
+
+              //map values(ids) to label for every cell
+              valueFormatter: ({ value }) =>
+                value && options.find((o) => o.value === value).label,
+
+              //if its display value, change it to link
+              ...(c.type != 'reference' &&
+                c.displayValue && {
+                  renderCell: ({ value, id }) => (
+                    <Link to={`/table/${name}/${id}`}>
+                      {value && options.find((o) => o.value === value).label}
+                    </Link>
+                  ),
+                }),
+              //the same, but foreign table
+              ...(c.type == 'reference' && {
+                renderCell: ({ value }) => {
+                  const option = options.find((o) => o.value === value)
+                  return (
+                    <Link to={`/table/${c.referenceTo.name}/${option.value}`}>
+                      {value && option.label}
+                    </Link>
+                  )
+                },
+              }),
+            }
+          }
+
+          const dateColumn = {
+            type: 'date',
+            width: 120,
+            valueFormatter: ({ value }) =>
+              value && new Date(value).toLocaleDateString('en-GB'),
+
+            ...(c.displayValue && {
+              renderCell: ({ value, id }) => (
+                <Link to={`/table/${name}/${id}`}>
+                  {new Date(value).toLocaleDateString('en-GB')}
+                </Link>
+              ),
+            }),
+          }
+
+          const stringColumn = {
+            ...(c.displayValue && {
+              renderCell: ({ value, id }) => (
+                <Link to={`/table/${name}/${id}`}>{value}</Link>
+              ),
+            }),
+          }
+
+          const boolColumn = {
+            type: 'boolean',
+            width: 100,
+          }
+          const numberColumn = {
+            type: 'number',
+            width: 100,
+          }
+
+          const column = await (async () => {
+            switch (c.type) {
+              case 'date':
+                return dateColumn
+              case 'bool':
+                return boolColumn
+              case 'number':
+              case 'id':
+                return numberColumn
+              case 'reference':
+              case 'dropdown':
+                return await referenceColumn(c)
+              case null:
+                return stringColumn
+              default:
+                return null
+            }
+          })()
+
+          return {
+            field: c.name,
+            headerName: c.displayName,
+            editable: !c.readonly,
+            width: 200,
+            ...column,
+          }
+        })
+      )
+    )
+
+    // Fetch rowss
+    let { data: rows } = customURL
+      ? await api.get(customURL)
+      : await api.get(`table/${name}`)
+
+    if (rows) setRows(rows)
   }
 
   function handleCellEditCommit(e) {
