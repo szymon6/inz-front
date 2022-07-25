@@ -56,8 +56,9 @@ const Record = ({ isNew }) => {
     action()
       .then((id) => {
         if (pressedButton == 'submit') navigate(`/table/${tableName}`)
-        else if (pressedButton == 'save' && isNew)
-          navigate(`/table/${tableName}/${id}`)
+        else if (pressedButton == 'save' && isNew) {
+          if (id) navigate(`/table/${tableName}/${id}`)
+        }
       })
       .then(setPressedButton(null))
   }

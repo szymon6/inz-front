@@ -21,12 +21,14 @@ const Table = ({ name, dropdown, customURL }) => {
 
   const navigate = useNavigate()
 
+  const type = dropdown ? 'dropdown' : 'table'
+
   async function fetch() {
     //Fetch table info
 
     //display name
     if (!dropdown) {
-      const { data: tableInfo, error } = await api.get(`table-info/${name}`)
+      const { data: tableInfo, error } = await api.get(`${type}-info/${name}`)
       if (error) return setNotFound(true)
       setTableDisplayName(tableInfo.displayName)
 
@@ -138,7 +140,7 @@ const Table = ({ name, dropdown, customURL }) => {
       // Fetch rowss
       let { data: rows } = customURL
         ? await api.get(customURL)
-        : await api.get(`table/${name}`)
+        : await api.get(`${type}/${name}`)
       setRows(rows)
     } else {
       setColumns([
@@ -159,12 +161,12 @@ const Table = ({ name, dropdown, customURL }) => {
   }
 
   function handleCellEditCommit(e) {
-    api.put(`table/${name}/${e.id}`, { [e.field]: e.value })
+    api.put(`${type}/${name}/${e.id}`, { [e.field]: e.value })
   }
 
   async function handleDelete() {
     for await (const id of selectedRows) {
-      await api.delete(`table/${name}/${id}`)
+      await api.delete(`${type}/${name}/${id}`)
     }
     fetch()
   }
