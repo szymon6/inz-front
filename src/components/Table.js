@@ -140,7 +140,7 @@ const Table = ({ name, dropdown, customURL }) => {
       // Fetch rowss
       let { data: rows } = customURL
         ? await api.get(customURL)
-        : await api.get(`${type}/${name}`)
+        : await api.get(`table/${name}`)
       setRows(rows)
     } else {
       setColumns([
@@ -161,12 +161,12 @@ const Table = ({ name, dropdown, customURL }) => {
   }
 
   function handleCellEditCommit(e) {
-    api.put(`${type}/${name}/${e.id}`, { [e.field]: e.value })
+    api.put(`table/${name}/${e.id}`, { [e.field]: e.value })
   }
 
   async function handleDelete() {
     for await (const id of selectedRows) {
-      await api.delete(`${type}/${name}/${id}`)
+      await api.delete(`table/${name}/${id}`)
     }
     fetch()
   }

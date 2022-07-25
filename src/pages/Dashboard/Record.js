@@ -81,7 +81,7 @@ const Record = ({ isNew }) => {
   if (!isNew && isEmpty(data)) return null
 
   const disabledButtons = !isNew && isEmpty(providedData)
-  console.log(window.history.action)
+
   return (
     <div>
       <header
