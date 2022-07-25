@@ -3,7 +3,7 @@ import ListAlt from '@mui/icons-material/ListAlt'
 import OpenInNew from '@mui/icons-material/OpenInNew'
 import { IconButton, Tooltip } from '@mui/material'
 import React, { useState } from 'react'
-import EditDropdownDialog from './DraggableDialog'
+import EditDropdownDialog from './EditDropdownDialog'
 
 export const OpenTableButton = ({ table }) => {
   return (
@@ -31,7 +31,9 @@ export const EditDropdownButton = ({ dropdown }) => {
   const [open, setOpen] = useState(false)
   return (
     <>
-      {open && <EditDropdownDialog close={() => setOpen(false)} />}
+      {open && (
+        <EditDropdownDialog dropdown={dropdown} close={() => setOpen(false)} />
+      )}
 
       <Tooltip title="Edit dropdown">
         <IconButton onClick={() => setOpen(true)}>

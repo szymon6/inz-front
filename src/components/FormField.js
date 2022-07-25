@@ -25,6 +25,8 @@ const ReferenceField = ({ f, handleChange, data }) => {
       .then(({ data }) => setOptions(data))
   }, [])
 
+  console.log(f)
+
   if (!options.length) return null
   return (
     <Box sx={{ position: 'relative' }}>
@@ -52,7 +54,7 @@ const ReferenceField = ({ f, handleChange, data }) => {
             <OpenTableButton table={f.referenceTo.name} />
           </Box>
         ) : (
-          <EditDropdownButton />
+          <EditDropdownButton dropdown={'d_role'} /> //TODO dynamic
         )}
       </Box>
     </Box>
