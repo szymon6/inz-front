@@ -1,25 +1,25 @@
-import AddBoxIcon from '@mui/icons-material/AddBox'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { IconButton, Typography } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import { DataGrid } from '@mui/x-data-grid'
-import React, { useEffect, useState } from 'react'
-import { Link as UnstyledLink, useNavigate } from 'react-router-dom'
-import api from '../api'
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { DataGrid } from '@mui/x-data-grid';
+import React, { useEffect, useState } from 'react';
+import { Link as UnstyledLink, useNavigate } from 'react-router-dom';
+import api from '../api';
 
 const Link = styled(UnstyledLink)({
   color: 'black',
-})
+});
 
 const Table = ({ name, dropdown, customURL }) => {
-  const [tableDisplayName, setTableDisplayName] = useState('')
-  const [rows, setRows] = useState([])
-  const [columns, setColumns] = useState([])
-  const [notFound, setNotFound] = useState(false)
+  const [tableDisplayName, setTableDisplayName] = useState('');
+  const [rows, setRows] = useState([]);
+  const [columns, setColumns] = useState([]);
+  const [notFound, setNotFound] = useState(false);
 
-  const [selectedRows, setSelectedRows] = useState([])
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   async function fetch() {
     //Fetch table info
@@ -28,9 +28,9 @@ const Table = ({ name, dropdown, customURL }) => {
 
     const { data: tableInfo, error } = dropdown
       ? await api.get(`dropdown-info`)
-      : await api.get(`table-info/${name}`)
-    if (error) return setNotFound(true)
-    setTableDisplayName(tableInfo.displayName)
+      : await api.get(`table-info/${name}`);
+    if (error) return setNotFound(true);
+    setTableDisplayName(tableInfo.displayName);
 
     setColumns(
       await Promise.all(
@@ -40,7 +40,7 @@ const Table = ({ name, dropdown, customURL }) => {
               c.type == 'dropdown'
                 ? `options/dropdown/${c.referenceToDropdownId}`
                 : `options/table/${c.referenceToId}`
-            )
+            );
 
             return {
               type: 'singleSelect',
@@ -64,16 +64,16 @@ const Table = ({ name, dropdown, customURL }) => {
               //the same, but foreign table
               ...(c.type == 'reference' && {
                 renderCell: ({ value }) => {
-                  const option = options.find((o) => o.value === value)
+                  const option = options.find((o) => o.value === value);
                   return (
                     <Link to={`/table/${c.referenceTo.name}/${option.value}`}>
                       {value && option.label}
                     </Link>
-                  )
+                  );
                 },
               }),
-            }
-          }
+            };
+          };
 
           const dateColumn = {
             type: 'date',
@@ -88,7 +88,7 @@ const Table = ({ name, dropdown, customURL }) => {
                 </Link>
               ),
             }),
-          }
+          };
 
           const stringColumn = {
             ...(c.displayValue && {
@@ -96,35 +96,35 @@ const Table = ({ name, dropdown, customURL }) => {
                 <Link to={`/table/${name}/${id}`}>{value}</Link>
               ),
             }),
-          }
+          };
 
           const boolColumn = {
             type: 'boolean',
             width: 100,
-          }
+          };
           const numberColumn = {
             type: 'number',
             width: 100,
-          }
+          };
 
           const column = await (async () => {
             switch (c.type) {
               case 'date':
-                return dateColumn
+                return dateColumn;
               case 'bool':
-                return boolColumn
+                return boolColumn;
               case 'number':
               case 'id':
-                return numberColumn
+                return numberColumn;
               case 'reference':
               case 'dropdown':
-                return await referenceColumn(c)
+                return await referenceColumn(c);
               case null:
-                return stringColumn
+                return stringColumn;
               default:
-                return null
+                return null;
             }
-          })()
+          })();
 
           return {
             field: c.name,
@@ -132,39 +132,42 @@ const Table = ({ name, dropdown, customURL }) => {
             editable: !c.readonly,
             width: 200,
             ...column,
-          }
+          };
         })
       )
-    )
+    );
 
     // Fetch rowss
     let { data: rows } = customURL
       ? await api.get(customURL)
-      : await api.get(`table/${name}`)
+      : await api.get(`table/${name}`);
 
-    if (rows) setRows(rows)
+    if (rows) setRows(rows);
   }
 
   function handleCellEditCommit(e) {
-    api.put(`table/${name}/${e.id}`, { [e.field]: e.value })
+    api.put(`table/${name}/${e.id}`, { [e.field]: e.value });
   }
 
   async function handleDelete() {
+    let errors = false;
     for await (const id of selectedRows) {
-      await api.delete(`table/${name}/${id}`)
+      const { error } = await api.delete(`table/${name}/${id}`);
+      if (error) errors = true;
     }
-    fetch()
+    if (errors) alert('Could not delete, check if records are not in use');
+    fetch();
   }
 
   useEffect(() => {
-    setSelectedRows([])
-    setColumns([])
-    setRows([])
-    setNotFound(false)
-    fetch()
-  }, [name])
+    setSelectedRows([]);
+    setColumns([]);
+    setRows([]);
+    setNotFound(false);
+    fetch();
+  }, [name]);
 
-  if (notFound) return <div>Table not found</div>
+  if (notFound) return <div>Table not found</div>;
 
   return (
     <>
@@ -206,7 +209,7 @@ const Table = ({ name, dropdown, customURL }) => {
         </IconButton>
       )}
     </>
-  )
-}
+  );
+};
 
-export default Table
+export default Table;
