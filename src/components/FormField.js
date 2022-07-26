@@ -13,7 +13,7 @@ import {
   OpenTableButton,
 } from './RecordButtons';
 
-const ReferenceField = ({ f, handleChange, data }) => {
+const ReferenceField = ({ f, handleChange, data, reloadField }) => {
   const [options, setOptions] = useState([]);
 
   const fetch = () => {
@@ -57,7 +57,10 @@ const ReferenceField = ({ f, handleChange, data }) => {
             <OpenTableButton table={f.referenceTo.name} />
           </Box>
         ) : (
-          <EditDropdownButton dropdown={f.referenceToDropdown.name} />
+          <EditDropdownButton
+            dropdown={f.referenceToDropdown.name}
+            reloadField={reloadField}
+          />
         )}
       </Box>
     </Box>
@@ -126,6 +129,8 @@ const CheckBoxField = ({ f, handleChange, data }) => {
 };
 
 const FormField = (p) => {
+  const [reload, setReload] = useState(false);
+
   const Input = (() => {
     switch (p.f.type) {
       case 'reference':
@@ -140,10 +145,16 @@ const FormField = (p) => {
     }
   })();
 
+  useEffect(() => {
+    setReload(false);
+  }, [reload]);
+
   return (
-    <Box my={2}>
-      <Input {...p} />
-    </Box>
+    !reload && (
+      <Box my={2}>
+        <Input {...p} reloadField={() => setReload(true)} />
+      </Box>
+    )
   );
 };
 
