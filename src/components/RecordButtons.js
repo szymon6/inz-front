@@ -1,9 +1,9 @@
-import Edit from '@mui/icons-material/Edit'
-import ListAlt from '@mui/icons-material/ListAlt'
-import OpenInNew from '@mui/icons-material/OpenInNew'
-import { IconButton, Tooltip } from '@mui/material'
-import React, { useState } from 'react'
-import EditDropdownDialog from './EditDropdownDialog'
+import Edit from '@mui/icons-material/Edit';
+import ListAlt from '@mui/icons-material/ListAlt';
+import OpenInNew from '@mui/icons-material/OpenInNew';
+import { IconButton, Tooltip } from '@mui/material';
+import React, { useState } from 'react';
+import EditDropdownDialog from './EditDropdownDialog';
 
 export const OpenTableButton = ({ table }) => {
   return (
@@ -12,8 +12,8 @@ export const OpenTableButton = ({ table }) => {
         <ListAlt />
       </IconButton>
     </Tooltip>
-  )
-}
+  );
+};
 
 export const OpenRecordButton = ({ table, id }) => {
   return (
@@ -24,16 +24,19 @@ export const OpenRecordButton = ({ table, id }) => {
         <OpenInNew />
       </IconButton>
     </Tooltip>
-  )
-}
+  );
+};
 
-export const EditDropdownButton = ({ dropdown }) => {
-  const [open, setOpen] = useState(false)
+export const EditDropdownButton = ({ dropdown, reloadField }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+    reloadField();
+  };
   return (
     <>
-      {open && (
-        <EditDropdownDialog dropdown={dropdown} close={() => setOpen(false)} />
-      )}
+      {open && <EditDropdownDialog dropdown={dropdown} close={handleClose} />}
 
       <Tooltip title="Edit dropdown">
         <IconButton onClick={() => setOpen(true)}>
@@ -41,5 +44,5 @@ export const EditDropdownButton = ({ dropdown }) => {
         </IconButton>
       </Tooltip>
     </>
-  )
-}
+  );
+};
