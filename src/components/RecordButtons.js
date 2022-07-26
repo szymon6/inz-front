@@ -4,6 +4,7 @@ import OpenInNew from '@mui/icons-material/OpenInNew';
 import { IconButton, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import EditDropdownDialog from './EditDropdownDialog';
+import { useFieldContext } from './FormField';
 
 export const OpenTableButton = ({ table }) => {
   return (
@@ -27,12 +28,14 @@ export const OpenRecordButton = ({ table, id }) => {
   );
 };
 
-export const EditDropdownButton = ({ dropdown, reloadField }) => {
+export const EditDropdownButton = ({ dropdown }) => {
   const [open, setOpen] = useState(false);
+
+  const fieldContext = useFieldContext();
 
   const handleClose = () => {
     setOpen(false);
-    reloadField();
+    fieldContext.reload();
   };
   return (
     <>

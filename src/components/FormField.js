@@ -5,7 +5,7 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import api from '../api';
 import {
   EditDropdownButton,
@@ -13,7 +13,7 @@ import {
   OpenTableButton,
 } from './RecordButtons';
 
-const ReferenceField = ({ f, handleChange, data, reloadField }) => {
+const ReferenceField = ({ f, handleChange, data }) => {
   const [options, setOptions] = useState([]);
 
   const fetch = () => {
@@ -57,10 +57,7 @@ const ReferenceField = ({ f, handleChange, data, reloadField }) => {
             <OpenTableButton table={f.referenceTo.name} />
           </Box>
         ) : (
-          <EditDropdownButton
-            dropdown={f.referenceToDropdown.name}
-            reloadField={reloadField}
-          />
+          <EditDropdownButton dropdown={f.referenceToDropdown.name} />
         )}
       </Box>
     </Box>
@@ -128,6 +125,9 @@ const CheckBoxField = ({ f, handleChange, data }) => {
   );
 };
 
+const FieldContext = React.createContext();
+export const useFieldContext = () => useContext(FieldContext);
+
 const FormField = (p) => {
   const [reload, setReload] = useState(false);
 
@@ -152,7 +152,9 @@ const FormField = (p) => {
   return (
     !reload && (
       <Box my={2}>
-        <Input {...p} reloadField={() => setReload(true)} />
+        <FieldContext.Provider value={{ reload: () => setReload(true) }}>
+          <Input {...p} />
+        </FieldContext.Provider>
       </Box>
     )
   );
