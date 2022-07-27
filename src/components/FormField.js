@@ -83,7 +83,6 @@ const DateField = ({ f, handleChange, data }) => {
       onChange={(e) => {
         const data = e.target.value
         setEmpty(data == '')
-        console.log(new Date(data))
         handleChange(f.name, new Date(data))
       }}
     />
