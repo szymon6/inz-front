@@ -169,6 +169,8 @@ const Table = ({ name, dropdown, customURL }) => {
     setColumns([])
     setRows([])
     setNotFound(false)
+    setTableDisplayName('')
+
     fetch()
   }, [name])
 

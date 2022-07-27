@@ -13,8 +13,9 @@ const Record = ({ isNew }) => {
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [fields, setFields] = useState([])
   const [data, setData] = useState({})
-  const navigate = useNavigate()
   const [pressedButton, setPressedButton] = useState(null)
+  
+  const navigate = useNavigate()
 
   async function fetchColumns() {
     //fetch display name
