@@ -55,6 +55,7 @@ const Record = ({ isNew }) => {
     const action = isNew ? postNew : update
     action()
       .then((id) => {
+        if (id == -1) return
         if (pressedButton == 'submit') navigate(`/table/${tableName}`)
         else if (pressedButton == 'save' && isNew) {
           if (id) navigate(`/table/${tableName}/${id}`)
@@ -67,7 +68,11 @@ const Record = ({ isNew }) => {
 
   async function postNew() {
     const { data } = await api.post(`table/${tableName}`, providedData)
-    return data && data.id //todo data?.id
+    if (!data) {
+      alert('record could not be added, check if you provided valid data')
+      return -1
+    }
+    return data?.id
   }
 
   async function update() {
