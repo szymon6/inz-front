@@ -3,18 +3,18 @@ import {
   Checkbox,
   FormControlLabel,
   TextField,
-} from '@mui/material';
-import { Box } from '@mui/system';
-import React, { useContext, useEffect, useState } from 'react';
-import api from '../api';
+} from '@mui/material'
+import { Box } from '@mui/system'
+import React, { useContext, useEffect, useState } from 'react'
+import api from '../api'
 import {
   EditDropdownButton,
   OpenRecordButton,
   OpenTableButton,
-} from './RecordButtons';
+} from './RecordButtons'
 
 const ReferenceField = ({ f, handleChange, data }) => {
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState([])
 
   const fetch = () => {
     api
@@ -23,14 +23,14 @@ const ReferenceField = ({ f, handleChange, data }) => {
           ? `options/dropdown/${f.referenceToDropdownId}`
           : `options/table/${f.referenceToId}`
       )
-      .then(({ data }) => setOptions(data));
-  };
+      .then(({ data }) => setOptions(data))
+  }
 
   useEffect(() => {
-    fetch();
-  }, []);
+    fetch()
+  }, [])
 
-  if (!options.length) return null;
+  if (!options.length) return null
   return (
     <Box sx={{ position: 'relative' }}>
       <Autocomplete
@@ -41,7 +41,7 @@ const ReferenceField = ({ f, handleChange, data }) => {
           <TextField {...params} label={f.displayName} required={f.required} />
         )}
         onChange={(_, value) => {
-          handleChange(f.name, value != null ? value.value : null);
+          handleChange(f.name, value != null ? value.value : null)
         }}
       />
       <Box
@@ -61,11 +61,11 @@ const ReferenceField = ({ f, handleChange, data }) => {
         )}
       </Box>
     </Box>
-  );
-};
+  )
+}
 
 const DateField = ({ f, handleChange, data }) => {
-  const [empty, setEmpty] = useState(!data);
+  const [empty, setEmpty] = useState(!data)
 
   return (
     <TextField
@@ -81,13 +81,14 @@ const DateField = ({ f, handleChange, data }) => {
         '*:focus::-webkit-datetime-edit': { color: '#000' },
       }}
       onChange={(e) => {
-        const data = e.target.value;
-        setEmpty(data == '');
-        handleChange(f.name, new Date(data));
+        const data = e.target.value
+        setEmpty(data == '')
+        console.log(new Date(data))
+        handleChange(f.name, new Date(data))
       }}
     />
-  );
-};
+  )
+}
 
 const Field = ({ f, handleChange, data }) => (
   <TextField
@@ -98,19 +99,19 @@ const Field = ({ f, handleChange, data }) => (
     type={f.type}
     required={f.required}
     onChange={(e) => {
-      let data = e.target.value;
+      let data = e.target.value
       if (f.type == 'number')
-        data = data != '' ? +data : null; //because +'' makes 0
-      else data = data.trim();
-      handleChange(f.name, data);
+        data = data != '' ? +data : null //because +'' makes 0
+      else data = data.trim()
+      handleChange(f.name, data)
     }}
   />
-);
+)
 
 const CheckBoxField = ({ f, handleChange, data }) => {
   useEffect(() => {
-    if (data == null) handleChange(f.name, false);
-  }, []);
+    if (data == null) handleChange(f.name, false)
+  }, [])
 
   return (
     <FormControlLabel
@@ -122,32 +123,32 @@ const CheckBoxField = ({ f, handleChange, data }) => {
       }
       label={f.displayName}
     />
-  );
-};
+  )
+}
 
-const FieldContext = React.createContext();
-export const useFieldContext = () => useContext(FieldContext);
+const FieldContext = React.createContext()
+export const useFieldContext = () => useContext(FieldContext)
 
 const FormField = (p) => {
-  const [reload, setReload] = useState(false);
+  const [reload, setReload] = useState(false)
 
   const Input = (() => {
     switch (p.f.type) {
       case 'reference':
       case 'dropdown':
-        return ReferenceField;
+        return ReferenceField
       case 'date':
-        return DateField;
+        return DateField
       case 'bool':
-        return CheckBoxField;
+        return CheckBoxField
       default:
-        return Field;
+        return Field
     }
-  })();
+  })()
 
   useEffect(() => {
-    setReload(false);
-  }, [reload]);
+    setReload(false)
+  }, [reload])
 
   return (
     !reload && (
@@ -157,7 +158,7 @@ const FormField = (p) => {
         </FieldContext.Provider>
       </Box>
     )
-  );
-};
+  )
+}
 
-export default FormField;
+export default FormField
