@@ -1,10 +1,10 @@
-import Edit from '@mui/icons-material/Edit';
-import ListAlt from '@mui/icons-material/ListAlt';
-import OpenInNew from '@mui/icons-material/OpenInNew';
-import { IconButton, Tooltip } from '@mui/material';
-import React, { useState } from 'react';
-import EditDropdownDialog from './EditDropdownDialog';
-import { useFieldContext } from './FormField';
+import Edit from '@mui/icons-material/Edit'
+import ListAlt from '@mui/icons-material/ListAlt'
+import OpenInNew from '@mui/icons-material/OpenInNew'
+import { IconButton, Tooltip } from '@mui/material'
+import React, { useState } from 'react'
+import { EditDropdownDialog } from './dialogs'
+import { useFieldContext } from './FormField'
 
 export const OpenTableButton = ({ table }) => {
   return (
@@ -13,8 +13,8 @@ export const OpenTableButton = ({ table }) => {
         <ListAlt />
       </IconButton>
     </Tooltip>
-  );
-};
+  )
+}
 
 export const OpenRecordButton = ({ table, id }) => {
   return (
@@ -25,18 +25,18 @@ export const OpenRecordButton = ({ table, id }) => {
         <OpenInNew />
       </IconButton>
     </Tooltip>
-  );
-};
+  )
+}
 
 export const EditDropdownButton = ({ dropdown }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
-  const fieldContext = useFieldContext();
+  const fieldContext = useFieldContext()
 
   const handleClose = () => {
-    setOpen(false);
-    fieldContext.reload();
-  };
+    setOpen(false)
+    fieldContext.reload()
+  }
   return (
     <>
       {open && <EditDropdownDialog dropdown={dropdown} close={handleClose} />}
@@ -47,5 +47,5 @@ export const EditDropdownButton = ({ dropdown }) => {
         </IconButton>
       </Tooltip>
     </>
-  );
-};
+  )
+}

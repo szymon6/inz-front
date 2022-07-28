@@ -5,8 +5,8 @@ import DialogContent from '@mui/material/DialogContent'
 import TextField from '@mui/material/TextField'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import api from '../api'
-import Table from './Table'
+import api from '../../api'
+import Table from '../Table'
 
 export default function EditDropdownDialog({ dropdown, close }) {
   const { register, handleSubmit, reset } = useForm()
