@@ -22,6 +22,7 @@ import { observer } from 'mobx-react-lite'
 import * as React from 'react'
 import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import ChangePassDialog from '../components/ChangePassDialog'
+import Dialogs from '../components/dialogs'
 import logo from '../img/logo.png'
 import User from '../store/User'
 import { Link } from '../styled'
@@ -136,6 +137,7 @@ const Dashboard = observer(() => {
 
   return (
     <Box sx={{ display: 'flex' }}>
+      <Dialogs />
       {passChangeDialogOpened && (
         <ChangePassDialog
           handleClose={() => setPassChangeDialogOpened(false)}

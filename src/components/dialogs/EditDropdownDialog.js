@@ -3,17 +3,19 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import TextField from '@mui/material/TextField'
+import { observer } from 'mobx-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import api from '../../api'
+import DropdownDialog from '../../store/DropdownDialog'
 import Table from '../Table'
 
-export default function EditDropdownDialog({ dropdown, close }) {
+const EditDropdownDialog = observer(() => {
   const { register, handleSubmit, reset } = useForm()
   const [reload, setReload] = useState(false)
 
+  const { opened, close, dropdown } = DropdownDialog
   const submit = async ({ value }) => {
-    console.log(dropdown)
     await api.post(`table/${dropdown}`, { value })
     setReload(true)
     reset()
@@ -25,7 +27,7 @@ export default function EditDropdownDialog({ dropdown, close }) {
 
   return (
     <div>
-      <Dialog fullWidth maxWidth="xs" open={true} onClose={close}>
+      <Dialog fullWidth maxWidth="xs" open={opened} onClose={close}>
         <DialogContent>
           <form
             onSubmit={handleSubmit(submit)}
@@ -54,4 +56,6 @@ export default function EditDropdownDialog({ dropdown, close }) {
       </Dialog>
     </div>
   )
-}
+})
+
+export default EditDropdownDialog
