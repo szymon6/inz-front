@@ -41,6 +41,7 @@ const EditDropdownDialog = observer(() => {
               variant="standard"
               sx={{ width: '100%' }}
               {...register('value')}
+              required
             />
             <Button type="submit" variant="contained" color="primary">
               Add

@@ -13,7 +13,9 @@ const FileUpload = () => {
       setError('format must be .csv')
       return
     }
+
     setError(null)
+    //api.post('file/upload', file) todo:make it work (maybe need to set multipart/form-data" (maybe inContent-Type) or smth similar to this)
   }
 
   return (
