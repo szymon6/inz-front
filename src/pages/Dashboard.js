@@ -132,6 +132,11 @@ const Dashboard = observer(() => {
     {
       name: 'Other Certs',
       path: '/table/other_cert',
+      divider: true,
+    },
+    {
+      name: 'Upload File',
+      path: '/file/upload',
     },
   ]
 

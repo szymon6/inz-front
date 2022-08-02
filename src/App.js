@@ -5,6 +5,7 @@ import Record from './pages/Dashboard/Record'
 import TablePage from './pages/Dashboard/TablePage'
 import LoginPage from './pages/LoginPage'
 import User from './store/User'
+import FileUpload from './pages/FileUpload'
 
 function App() {
   useEffect(() => {
@@ -20,6 +21,7 @@ function App() {
             <Route path="table/:tableName" element={<TablePage />} />
             <Route path="table/:tableName/new" element={<Record isNew />} />
             <Route path="table/:tableName/:id" element={<Record />} />
+            <Route path="file/upload" element={<FileUpload />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
         </Routes>
