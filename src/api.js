@@ -2,23 +2,25 @@ import axios from 'axios'
 
 const api = {
   get: async (endpoint, body) => await send(endpoint, 'get', body),
-  post: async (endpoint, body) => await send(endpoint, 'post', body),
+  post: async (endpoint, body, contentType) =>
+    await send(endpoint, 'post', body, contentType),
   put: async (endpoint, body) => await send(endpoint, 'put', body),
   delete: async (endpoint, body) => await send(endpoint, 'delete', body),
 }
 
-async function send(endpoint, method, body) {
+async function send(endpoint, method, body, contentType) {
   let data
   let error
 
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
 
+  console.log(contentType || 'application/json')
   await axios({
     method,
     url: `http://localhost:3100/${endpoint}`,
     ...(body && { data: body }),
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': contentType || 'application/json',
       ...(token && { token }),
     },
   })
