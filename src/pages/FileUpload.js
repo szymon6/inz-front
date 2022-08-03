@@ -9,7 +9,6 @@ const FileUpload = () => {
 
   const [error, setError] = useState(null)
   const onSubmit = async ({ fileList }) => {
-    console.log(fileList)
     const file = fileList[0]
     if (!file.name.endsWith('.csv')) {
       setError('format must be .csv')
@@ -17,7 +16,6 @@ const FileUpload = () => {
     }
 
     send(file)
-
     setError(null)
   }
 
