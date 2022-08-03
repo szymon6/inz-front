@@ -16,8 +16,9 @@ const EditDropdownDialog = observer(() => {
 
   const { opened, close, dropdown } = DropdownDialog
   const submit = async ({ value }) => {
-    await api.post(`table/${dropdown}`, { value })
-    setReload(true)
+    const { error } = await api.post(`table/${dropdown}`, { value })
+    if (error) alert('Value could not be added, check if it already exist')
+    else setReload(true)
     reset()
   }
 
