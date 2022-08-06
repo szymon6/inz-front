@@ -54,15 +54,19 @@ const Record = ({ isNew }) => {
     })
   }
 
+  const omSuccessfulSubmit = () => {
+    if (pressedButton == 'submit') navigate(`/table/${tableName}`)
+    else if (pressedButton == 'save' && isNew)
+      navigate(`/table/${tableName}/${id}`)
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const action = isNew ? postNew : update
     action()
       .then(({ success, id }) => {
         if (!success) return
-        if (pressedButton == 'submit') navigate(`/table/${tableName}`)
-        else if (pressedButton == 'save' && isNew)
-          navigate(`/table/${tableName}/${id}`)
+        omSuccessfulSubmit()
       })
       .then(setPressedButton(null))
   }
