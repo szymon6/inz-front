@@ -58,12 +58,11 @@ const Record = ({ isNew }) => {
     e.preventDefault()
     const action = isNew ? postNew : update
     action()
-      .then((id) => {
-        if (id == -1) return
+      .then(({ success, id }) => {
+        if (!success) return
         if (pressedButton == 'submit') navigate(`/table/${tableName}`)
-        else if (pressedButton == 'save' && isNew) {
-          if (id) navigate(`/table/${tableName}/${id}`)
-        }
+        else if (pressedButton == 'save' && isNew)
+          navigate(`/table/${tableName}/${id}`)
       })
       .then(setPressedButton(null))
   }
@@ -71,19 +70,32 @@ const Record = ({ isNew }) => {
   const isEmpty = (obj) => Object.keys(obj).length === 0
 
   async function postNew() {
-    const { data } = await api.post(`table/${tableName}`, providedData)
-    if (!data) {
-      alert('record could not be added, check if you provided valid data')
-      return -1
+    const { data, error } = await api.post(`table/${tableName}`, providedData)
+    if (error) {
+      alert(
+        'record could not be added, check if you provided valid data, or if records already exist'
+      )
+      return { success: false }
     }
-    return data?.id
+    return { success: false, id: data?.id }
   }
 
   async function update() {
     if (isEmpty(providedData)) return
-    api
-      .patch(`table/${tableName}/${data.id}`, providedData)
-      .then(setProvidedData({}))
+    const { error } = await api.patch(
+      `table/${tableName}/${data.id}`,
+      providedData
+    )
+
+    if (error) {
+      alert(
+        'record could not be updated, check if you provided valid data, or if records already exist'
+      )
+      return { success: false }
+    } else {
+      setProvidedData({})
+      return { success: true }
+    }
   }
 
   if (notFound) return <div>Table not found</div>
