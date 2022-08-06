@@ -151,7 +151,7 @@ const Table = ({ name, dropdown, customURL }) => {
       date.setDate(date.getDate() + 1)
       e.value = date
     }
-    api.put(`table/${name}/${e.id}`, { [e.field]: e.value })
+    api.patch(`table/${name}/${e.id}`, { [e.field]: e.value })
   }
 
   async function handleDelete() {

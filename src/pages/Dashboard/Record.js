@@ -13,8 +13,9 @@ const Record = ({ isNew }) => {
   const [tableDisplayName, setTableDisplayName] = useState('')
   const [fields, setFields] = useState([])
   const [data, setData] = useState({})
+  const [providedData, setProvidedData] = useState({})
   const [pressedButton, setPressedButton] = useState(null)
-  
+
   const navigate = useNavigate()
 
   async function fetchColumns() {
@@ -42,7 +43,9 @@ const Record = ({ isNew }) => {
     if (!isNew) fetchData()
   }, [tableName, id])
 
-  const [providedData, setProvidedData] = React.useState({})
+  useEffect(() => {
+    console.log(providedData)
+  }, [providedData])
 
   const handleChange = (key, data) => {
     setProvidedData({
@@ -79,7 +82,7 @@ const Record = ({ isNew }) => {
   async function update() {
     if (isEmpty(providedData)) return
     api
-      .put(`table/${tableName}/${data.id}`, providedData)
+      .patch(`table/${tableName}/${data.id}`, providedData)
       .then(setProvidedData({}))
   }
 

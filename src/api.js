@@ -4,7 +4,7 @@ const api = {
   get: async (endpoint, body) => await send(endpoint, 'get', body),
   post: async (endpoint, body, contentType) =>
     await send(endpoint, 'post', body, contentType),
-  put: async (endpoint, body) => await send(endpoint, 'put', body),
+  patch: async (endpoint, body) => await send(endpoint, 'patch', body),
   delete: async (endpoint, body) => await send(endpoint, 'delete', body),
 }
 
