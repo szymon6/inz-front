@@ -14,7 +14,6 @@ async function send(endpoint, method, body, contentType) {
 
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
 
-  console.log(contentType || 'application/json')
   await axios({
     method,
     url: `http://localhost:3100/${endpoint}`,

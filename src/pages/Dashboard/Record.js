@@ -43,10 +43,6 @@ const Record = ({ isNew }) => {
     if (!isNew) fetchData()
   }, [tableName, id])
 
-  useEffect(() => {
-    console.log(providedData)
-  }, [providedData])
-
   const handleChange = (key, data) => {
     setProvidedData({
       ...providedData,
