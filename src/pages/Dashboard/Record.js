@@ -49,10 +49,6 @@ const Record = ({ isNew }) => {
       [key]: data,
     })
   }
-  useEffect(() => {
-    console.log('data:')
-    console.log(providedData)
-  }, [providedData])
 
   const omSuccessfulSubmit = (id) => {
     if (pressedButton == 'submit') navigate(`/table/${tableName}`)

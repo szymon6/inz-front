@@ -35,7 +35,7 @@ const Table = ({ name, dropdown, customURL }) => {
     setColumns(
       await Promise.all(
         tableInfo.columns.map(async (c) => {
-          const referenceColumn = async (c) => {
+          const referenceColumn = async () => {
             const { data: options } = await api.get(
               c.type == 'dropdown'
                 ? `options/dropdown/${c.referenceToDropdownId}`
@@ -75,19 +75,26 @@ const Table = ({ name, dropdown, customURL }) => {
             }
           }
 
-          const dateColumn = {
-            type: 'date',
-            width: 120,
-            valueFormatter: ({ value }) =>
-              value && new Date(value).toLocaleDateString('en-GB'),
+          const dateColumn = () => {
+            const representDate = (date) => {
+              if (new Date(date).getTime() == 0) return 'yes'
+              return new Date(date).toLocaleDateString('en-GB')
+            }
 
-            ...(c.displayValue && {
-              renderCell: ({ value, id }) => (
-                <Link to={`/table/${name}/${id}`}>
-                  {new Date(value).toLocaleDateString('en-GB')}
-                </Link>
-              ),
-            }),
+            return {
+              editable: true,
+              type: 'date',
+              width: 120,
+              valueFormatter: ({ value }) => value && representDate(value),
+
+              ...(c.displayValue && {
+                renderCell: ({ value, id }) => (
+                  <Link to={`/table/${name}/${id}`}>
+                    {representDate(value)}
+                  </Link>
+                ),
+              }),
+            }
           }
 
           const stringColumn = {
@@ -110,7 +117,7 @@ const Table = ({ name, dropdown, customURL }) => {
           const column = await (async () => {
             switch (c.type) {
               case 'date':
-                return dateColumn
+                return dateColumn()
               case 'bool':
                 return boolColumn
               case 'number':
@@ -118,7 +125,7 @@ const Table = ({ name, dropdown, customURL }) => {
                 return numberColumn
               case 'reference':
               case 'dropdown':
-                return await referenceColumn(c)
+                return await referenceColumn()
               case null:
                 return stringColumn
               default:
