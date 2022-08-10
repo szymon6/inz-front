@@ -49,8 +49,12 @@ const Record = ({ isNew }) => {
       [key]: data,
     })
   }
+  useEffect(() => {
+    console.log('data:')
+    console.log(providedData)
+  }, [providedData])
 
-  const omSuccessfulSubmit = () => {
+  const omSuccessfulSubmit = (id) => {
     if (pressedButton == 'submit') navigate(`/table/${tableName}`)
     else if (pressedButton == 'save' && isNew)
       navigate(`/table/${tableName}/${id}`)
@@ -62,7 +66,7 @@ const Record = ({ isNew }) => {
     action()
       .then(({ success, id }) => {
         if (!success) return
-        omSuccessfulSubmit()
+        omSuccessfulSubmit(id)
       })
       .then(setPressedButton(null))
   }
@@ -77,7 +81,7 @@ const Record = ({ isNew }) => {
       )
       return { success: false }
     }
-    return { success: false, id: data?.id }
+    return { success: true, id: data?.id }
   }
 
   async function update() {

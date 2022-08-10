@@ -68,16 +68,20 @@ const DateField = ({ f, handleChange, data }) => {
   const [empty, setEmpty] = useState(!data)
   const [checkBox, setCheckBox] = useState(f.required)
 
+  useEffect(() => {
+    if (checkBox) handleChange(f.name, new Date(0))
+  }, [])
+
   return (
     <>
       <FormControlLabel
         control={
           <Checkbox
             checked={checkBox}
-            defaultChecked={data}
             onChange={(_, v) => {
-              handleChange(f.name, v)
-              setCheckBox(v || f.required)
+              if (f.required) return
+              setCheckBox(v)
+              handleChange(f.name, v ? new Date(0) : null)
             }}
           />
         }
