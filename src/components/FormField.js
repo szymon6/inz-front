@@ -65,13 +65,20 @@ const ReferenceField = ({ f, handleChange, data }) => {
 }
 
 const DateField = ({ f, handleChange, data }) => {
-  const [empty, setEmpty] = useState(!data)
-  const [checkBox, setCheckBox] = useState(f.required)
+  const [empty, setEmpty] = useState(true)
+  const [checkBox, setCheckBox] = useState(f.required || data != null)
+  const [defaultValue, setDefaultValue] = useState(null)
 
   useEffect(() => {
     if (checkBox) handleChange(f.name, new Date(0))
   }, [])
 
+  if (defaultValue == null) {
+    if (data && new Date(data).getTime() != 0) {
+      setDefaultValue(data.slice(0, -14))
+      if (empty) setEmpty(false)
+    } else setDefaultValue('')
+  }
   return (
     <>
       <FormControlLabel
@@ -89,7 +96,7 @@ const DateField = ({ f, handleChange, data }) => {
       />
       <TextField
         fullWidth
-        defaultValue={data && data.slice(0, -14)}
+        defaultValue={defaultValue}
         label={f.displayName}
         type="date"
         sx={{
@@ -100,8 +107,10 @@ const DateField = ({ f, handleChange, data }) => {
           '*:focus::-webkit-datetime-edit': { color: '#000' },
         }}
         onChange={(e) => {
-          const data = e.target.value
+          let data = e.target.value
           setEmpty(data == '')
+          if (data == '') data = 0
+
           handleChange(f.name, new Date(data))
         }}
       />
