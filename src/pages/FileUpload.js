@@ -1,4 +1,4 @@
-import { Alert } from '@mui/material'
+import { Alert, CircularProgress } from '@mui/material'
 import Button from '@mui/material/Button'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -8,6 +8,7 @@ const FileUpload = () => {
   const { register, handleSubmit, reset } = useForm()
 
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
   const onSubmit = async ({ fileList }) => {
     const file = fileList[0]
     if (!file.name.endsWith('.csv')) {
@@ -23,11 +24,13 @@ const FileUpload = () => {
     const formData = new FormData()
     formData.append('spreadsheet', file)
 
+    setLoading(true)
     const { error } = await api.post(
       'file/upload',
       formData,
       'multipart/form-data'
     )
+    setLoading(false)
     if (error) {
       setError('error, file not uploaded')
       return
@@ -46,9 +49,16 @@ const FileUpload = () => {
             {error}
           </Alert>
         )}
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
           Upload
         </Button>
+        <br /> <br />
+        {loading && <CircularProgress />}
       </form>
     </div>
   )

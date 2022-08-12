@@ -16,12 +16,14 @@ const Table = ({ name, dropdown, customURL }) => {
   const [rows, setRows] = useState([])
   const [columns, setColumns] = useState([])
   const [notFound, setNotFound] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const [selectedRows, setSelectedRows] = useState([])
 
   const navigate = useNavigate()
 
   async function fetch() {
+    setLoading(true)
     //Fetch table info
 
     //display name
@@ -150,6 +152,8 @@ const Table = ({ name, dropdown, customURL }) => {
       : await api.get(`table/${name}`)
 
     if (rows) setRows(rows)
+
+    setLoading(false)
   }
 
   function handleCellEditCommit(e) {
@@ -172,11 +176,11 @@ const Table = ({ name, dropdown, customURL }) => {
   }
 
   useEffect(() => {
+    setTableDisplayName('')
     setSelectedRows([])
     setColumns([])
     setRows([])
     setNotFound(false)
-    setTableDisplayName('')
 
     fetch()
   }, [name])
@@ -215,6 +219,7 @@ const Table = ({ name, dropdown, customURL }) => {
         onCellEditCommit={handleCellEditCommit}
         selectionModel={selectedRows}
         onSelectionModelChange={(ids) => setSelectedRows(ids)}
+        loading={loading}
       />
 
       {selectedRows.length !== 0 && (
