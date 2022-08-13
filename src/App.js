@@ -3,13 +3,13 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Record from './pages/Dashboard/Record'
 import TablePage from './pages/Dashboard/TablePage'
-import LoginPage from './pages/LoginPage'
-import User from './store/User'
 import FileUpload from './pages/FileUpload'
+import LoginPage from './pages/LoginPage'
+import UserStore from './store/UserStore'
 
 function App() {
   useEffect(() => {
-    User.fetch()
+    UserStore.fetch()
   })
 
   return (

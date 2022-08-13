@@ -7,14 +7,14 @@ import { observer } from 'mobx-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import api from '../../api'
-import DropdownDialog from '../../store/DropdownDialog'
+import EditDropdownDialogStore from '../../store/EditDropdownDialogStore'
 import Table from '../Table'
 
 const EditDropdownDialog = observer(() => {
   const { register, handleSubmit, reset } = useForm()
   const [reload, setReload] = useState(false)
 
-  const { opened, close, dropdown } = DropdownDialog
+  const { opened, close, dropdown } = EditDropdownDialogStore
   const submit = async ({ value }) => {
     const { error } = await api.post(`table/${dropdown}`, { value })
     if (error) alert('Value could not be added, check if it already exist')

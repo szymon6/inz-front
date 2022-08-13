@@ -12,17 +12,17 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Navigate } from 'react-router-dom'
 import logo from '../img/logo.png'
-import User from '../store/User'
+import UserStore from '../store/UserStore'
 
 const SignIn = observer(() => {
   const { register, handleSubmit, reset } = useForm()
   const [error, setError] = useState(false)
   const [remember, setRemember] = useState(false)
 
-  if (User.isLoggedIn()) return <Navigate to="/" />
+  if (UserStore.isLoggedIn()) return <Navigate to="/" />
 
   async function submit({ username, pass }) {
-    const success = await User.login(username, pass, remember)
+    const success = await UserStore.login(username, pass, remember)
     if (!success) setError(true)
     reset()
   }

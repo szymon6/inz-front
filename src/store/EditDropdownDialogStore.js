@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 
-class DropdownDialog {
+class EditDropdownDialogStore {
   opened = false
   dropdown
   onClose
@@ -21,4 +21,4 @@ class DropdownDialog {
   }
 }
 
-export default new DropdownDialog()
+export default new EditDropdownDialogStore()

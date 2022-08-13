@@ -24,7 +24,7 @@ import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import ChangePassDialog from '../components/ChangePassDialog'
 import Dialogs from '../components/dialogs'
 import logo from '../img/logo.png'
-import User from '../store/User'
+import UserStore from '../store/UserStore'
 import { Link } from '../styled'
 
 const drawerWidth = 240
@@ -91,8 +91,8 @@ const Dashboard = observer(() => {
     setAnchorEl(null)
   }
 
-  if (User.loading) return null
-  else if (!User.isLoggedIn()) return <Navigate to="/login" />
+  if (UserStore.loading) return null
+  else if (!UserStore.isLoggedIn()) return <Navigate to="/login" />
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -174,10 +174,10 @@ const Dashboard = observer(() => {
               sx={{ cursor: 'pointer' }}
               avatar={
                 <Avatar sx={{ width: 30, height: 30 }}>
-                  {User.val.username.charAt(0)}
+                  {UserStore.val.username.charAt(0)}
                 </Avatar>
               }
-              title={User.val.username}
+              title={UserStore.val.username}
               onClick={handleClick}
             />
 
@@ -200,7 +200,7 @@ const Dashboard = observer(() => {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  User.logout()
+                  UserStore.logout()
                   navigate('/login')
                 }}
               >

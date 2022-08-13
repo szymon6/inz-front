@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 import api from '../api'
 
-class User {
+class UserStore {
   val = null
   loading = true
 
@@ -38,4 +38,4 @@ class User {
   }
 }
 
-export default new User()
+export default new UserStore()
