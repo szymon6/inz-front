@@ -3,15 +3,15 @@ import {
   Checkbox,
   FormControlLabel,
   TextField,
-} from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useContext, useEffect, useState } from 'react'
-import api from '../api'
+} from "@mui/material"
+import { Box } from "@mui/system"
+import api from "api"
+import React, { useContext, useEffect, useState } from "react"
 import {
   EditDropdownButton,
   OpenRecordButton,
   OpenTableButton,
-} from './RecordButtons'
+} from "./RecordButtons"
 
 const ReferenceField = ({ f, handleChange, data }) => {
   const [options, setOptions] = useState([])
@@ -19,7 +19,7 @@ const ReferenceField = ({ f, handleChange, data }) => {
   const fetch = () => {
     api
       .get(
-        f.type == 'dropdown'
+        f.type == "dropdown"
           ? `options/dropdown/${f.referenceToDropdownId}`
           : `options/table/${f.referenceToId}`
       )
@@ -32,7 +32,7 @@ const ReferenceField = ({ f, handleChange, data }) => {
 
   if (!options.length) return null
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: "relative" }}>
       <Autocomplete
         fullWidth
         defaultValue={options.find((o) => o.value == data)}
@@ -46,13 +46,13 @@ const ReferenceField = ({ f, handleChange, data }) => {
       />
       <Box
         sx={{
-          position: 'absolute',
-          top: '20%',
-          left: '100%',
+          position: "absolute",
+          top: "20%",
+          left: "100%",
         }}
       >
-        {f.type == 'reference' ? (
-          <Box sx={{ display: 'flex' }}>
+        {f.type == "reference" ? (
+          <Box sx={{ display: "flex" }}>
             {data && <OpenRecordButton table={f.referenceTo.name} id={data} />}
             <OpenTableButton table={f.referenceTo.name} />
           </Box>
@@ -77,7 +77,7 @@ const DateField = ({ f, handleChange, data }) => {
     if (data && new Date(data).getTime() != 0) {
       setDefaultValue(data.slice(0, -14))
       if (empty) setEmpty(false)
-    } else setDefaultValue('')
+    } else setDefaultValue("")
   }
   return (
     <>
@@ -92,7 +92,7 @@ const DateField = ({ f, handleChange, data }) => {
             }}
           />
         }
-        label={f.displayName.replace('Date', '')}
+        label={f.displayName.replace("Date", "")}
       />
       <TextField
         fullWidth
@@ -100,16 +100,16 @@ const DateField = ({ f, handleChange, data }) => {
         label={f.displayName}
         type="date"
         sx={{
-          display: checkBox ? 'block' : 'none',
-          '*::-webkit-datetime-edit': {
-            color: empty ? 'transparent' : '#000',
+          display: checkBox ? "block" : "none",
+          "*::-webkit-datetime-edit": {
+            color: empty ? "transparent" : "#000",
           },
-          '*:focus::-webkit-datetime-edit': { color: '#000' },
+          "*:focus::-webkit-datetime-edit": { color: "#000" },
         }}
         onChange={(e) => {
           let data = e.target.value
-          setEmpty(data == '')
-          if (data == '') data = 0
+          setEmpty(data == "")
+          if (data == "") data = 0
 
           handleChange(f.name, new Date(data))
         }}
@@ -128,8 +128,8 @@ const Field = ({ f, handleChange, data }) => (
     required={f.required}
     onChange={(e) => {
       let data = e.target.value
-      if (f.type == 'number')
-        data = data != '' ? +data : null //because +'' makes 0
+      if (f.type == "number")
+        data = data != "" ? +data : null //because +'' makes 0
       else data = data.trim()
       handleChange(f.name, data)
     }}
@@ -162,12 +162,12 @@ const FormField = (p) => {
 
   const Input = (() => {
     switch (p.f.type) {
-      case 'reference':
-      case 'dropdown':
+      case "reference":
+      case "dropdown":
         return ReferenceField
-      case 'date':
+      case "date":
         return DateField
-      case 'bool':
+      case "bool":
         return CheckBoxField
       default:
         return Field

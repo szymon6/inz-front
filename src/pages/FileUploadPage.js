@@ -1,18 +1,18 @@
-import { Alert, CircularProgress } from '@mui/material'
-import Button from '@mui/material/Button'
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import api from '../api'
+import { Alert, CircularProgress } from "@mui/material"
+import Button from "@mui/material/Button"
+import api from "api"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 
-const FileUpload = () => {
+const FileUploadPage = () => {
   const { register, handleSubmit, reset } = useForm()
 
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const onSubmit = async ({ fileList }) => {
     const file = fileList[0]
-    if (!file.name.endsWith('.csv')) {
-      setError('format must be .csv')
+    if (!file.name.endsWith(".csv")) {
+      setError("format must be .csv")
       return
     }
 
@@ -22,27 +22,27 @@ const FileUpload = () => {
 
   const send = async (file) => {
     const formData = new FormData()
-    formData.append('spreadsheet', file)
+    formData.append("spreadsheet", file)
 
     setLoading(true)
     const { error } = await api.post(
-      'file/upload',
+      "file/upload",
       formData,
-      'multipart/form-data'
+      "multipart/form-data"
     )
     setLoading(false)
     if (error) {
-      setError('error, file not uploaded')
+      setError("error, file not uploaded")
       return
     }
     reset()
-    alert('File successfully uploaded ')
+    alert("File successfully uploaded ")
   }
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-        <input type="file" {...register('fileList')} accept=".csv" required />
+        <input type="file" {...register("fileList")} accept=".csv" required />
         <br /> <br />
         {error && (
           <Alert sx={{ mb: 2 }} severity="error">
@@ -64,4 +64,4 @@ const FileUpload = () => {
   )
 }
 
-export default FileUpload
+export default FileUploadPage

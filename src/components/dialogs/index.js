@@ -1,10 +1,11 @@
-import React from 'react'
-import EditDropdownDialog from './EditDropdownDialog'
+import ChangePassDialog from "./ChangePassDialog"
+import EditDropdownDialog from "./EditDropdownDialog"
 
 const Dialogs = () => {
   return (
     <div>
       <EditDropdownDialog />
+      <ChangePassDialog />
     </div>
   )
 }

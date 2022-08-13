@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom'
-import Table from '../../components/Table'
+import Table from "components/Table"
+import { useParams } from "react-router-dom"
 
 const TablePage = () => {
   const { tableName } = useParams()

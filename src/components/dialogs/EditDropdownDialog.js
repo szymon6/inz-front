@@ -1,14 +1,14 @@
-import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import TextField from '@mui/material/TextField'
-import { observer } from 'mobx-react'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import api from '../../api'
-import EditDropdownDialogStore from '../../store/EditDropdownDialogStore'
-import Table from '../Table'
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import TextField from "@mui/material/TextField"
+import api from "api"
+import Table from "components/Table"
+import { observer } from "mobx-react"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import EditDropdownDialogStore from "store/EditDropdownDialogStore"
 
 const EditDropdownDialog = observer(() => {
   const { register, handleSubmit, reset } = useForm()
@@ -17,7 +17,7 @@ const EditDropdownDialog = observer(() => {
   const { opened, close, dropdown } = EditDropdownDialogStore
   const submit = async ({ value }) => {
     const { error } = await api.post(`table/${dropdown}`, { value })
-    if (error) alert('Value could not be added, check if it already exist')
+    if (error) alert("Value could not be added, check if it already exist")
     else setReload(true)
     reset()
   }
@@ -34,14 +34,14 @@ const EditDropdownDialog = observer(() => {
             onSubmit={handleSubmit(submit)}
             style={{
               marginBottom: 20,
-              display: 'flex',
+              display: "flex",
             }}
           >
             <TextField
               label="New Value"
               variant="standard"
-              sx={{ width: '100%' }}
-              {...register('value')}
+              sx={{ width: "100%" }}
+              {...register("value")}
               required
             />
             <Button type="submit" variant="contained" color="primary">

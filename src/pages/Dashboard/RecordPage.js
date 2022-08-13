@@ -1,16 +1,16 @@
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import { Box, Button, IconButton, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import api from '../../api'
-import FormField from '../../components/FormField'
-import LinkedList from '../../components/LinkedList'
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"
+import { Box, Button, IconButton, Typography } from "@mui/material"
+import api from "api"
+import FormField from "components/FormField"
+import LinkedList from "components/LinkedList"
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 
-const Record = ({ isNew }) => {
+const RecordPage = ({ isNew }) => {
   const { tableName, id } = useParams()
 
   const [notFound, setNotFound] = useState(false)
-  const [tableDisplayName, setTableDisplayName] = useState('')
+  const [tableDisplayName, setTableDisplayName] = useState("")
   const [fields, setFields] = useState([])
   const [data, setData] = useState({})
   const [providedData, setProvidedData] = useState({})
@@ -34,7 +34,7 @@ const Record = ({ isNew }) => {
 
   useEffect(() => {
     setNotFound(false)
-    setTableDisplayName('')
+    setTableDisplayName("")
     setFields([])
     setData([])
     setPressedButton(null)
@@ -51,8 +51,8 @@ const Record = ({ isNew }) => {
   }
 
   const omSuccessfulSubmit = (id) => {
-    if (pressedButton == 'submit') navigate(`/table/${tableName}`)
-    else if (pressedButton == 'save' && isNew)
+    if (pressedButton == "submit") navigate(`/table/${tableName}`)
+    else if (pressedButton == "save" && isNew)
       navigate(`/table/${tableName}/${id}`)
   }
 
@@ -73,7 +73,7 @@ const Record = ({ isNew }) => {
     const { data, error } = await api.post(`table/${tableName}`, providedData)
     if (error) {
       alert(
-        'record could not be added, check if you provided valid data, or if records already exist'
+        "record could not be added, check if you provided valid data, or if records already exist"
       )
       return { success: false }
     }
@@ -89,7 +89,7 @@ const Record = ({ isNew }) => {
 
     if (error) {
       alert(
-        'record could not be updated, check if you provided valid data, or if records already exist'
+        "record could not be updated, check if you provided valid data, or if records already exist"
       )
       return { success: false }
     } else {
@@ -107,8 +107,8 @@ const Record = ({ isNew }) => {
     <div>
       <header
         style={{
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <IconButton
@@ -126,8 +126,8 @@ const Record = ({ isNew }) => {
       <Box
         sx={{
           mt: 5,
-          display: 'flex',
-          justifyContent: 'center',
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <Box minWidth="400px" width="40%">
@@ -147,9 +147,9 @@ const Record = ({ isNew }) => {
 
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'end',
-                '& Button': {
+                display: "flex",
+                justifyContent: "end",
+                "& Button": {
                   ml: 2,
                 },
               }}
@@ -158,7 +158,7 @@ const Record = ({ isNew }) => {
                 type="submit"
                 variant="outlined"
                 disabled={disabledButtons}
-                onClick={() => setPressedButton('save')}
+                onClick={() => setPressedButton("save")}
               >
                 Save
               </Button>
@@ -166,7 +166,7 @@ const Record = ({ isNew }) => {
                 type="submit"
                 disabled={disabledButtons}
                 variant="contained"
-                onClick={() => setPressedButton('submit')}
+                onClick={() => setPressedButton("submit")}
               >
                 Submit
               </Button>
@@ -180,4 +180,4 @@ const Record = ({ isNew }) => {
   )
 }
 
-export default Record
+export default RecordPage

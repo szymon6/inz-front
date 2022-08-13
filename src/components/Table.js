@@ -1,18 +1,18 @@
-import AddBoxIcon from '@mui/icons-material/AddBox'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { IconButton, Typography } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import { DataGrid } from '@mui/x-data-grid'
-import React, { useEffect, useState } from 'react'
-import { Link as UnstyledLink, useNavigate } from 'react-router-dom'
-import api from '../api'
+import AddBoxIcon from "@mui/icons-material/AddBox"
+import DeleteIcon from "@mui/icons-material/Delete"
+import { IconButton, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { DataGrid } from "@mui/x-data-grid"
+import api from "api"
+import { useEffect, useState } from "react"
+import { Link as UnstyledLink, useNavigate } from "react-router-dom"
 
 const Link = styled(UnstyledLink)({
-  color: 'black',
+  color: "black",
 })
 
 const Table = ({ name, dropdown, customURL }) => {
-  const [tableDisplayName, setTableDisplayName] = useState('')
+  const [tableDisplayName, setTableDisplayName] = useState("")
   const [rows, setRows] = useState([])
   const [columns, setColumns] = useState([])
   const [notFound, setNotFound] = useState(false)
@@ -39,13 +39,13 @@ const Table = ({ name, dropdown, customURL }) => {
         tableInfo.columns.map(async (c) => {
           const referenceColumn = async () => {
             const { data: options } = await api.get(
-              c.type == 'dropdown'
+              c.type == "dropdown"
                 ? `options/dropdown/${c.referenceToDropdownId}`
                 : `options/table/${c.referenceToId}`
             )
 
             return {
-              type: 'singleSelect',
+              type: "singleSelect",
 
               //options for dropdown
               valueOptions: options,
@@ -55,7 +55,7 @@ const Table = ({ name, dropdown, customURL }) => {
                 value && options.find((o) => o.value === value).label,
 
               //if its display value, change it to link
-              ...(c.type != 'reference' &&
+              ...(c.type != "reference" &&
                 c.displayValue && {
                   renderCell: ({ value, id }) => (
                     <Link to={`/table/${name}/${id}`}>
@@ -64,7 +64,7 @@ const Table = ({ name, dropdown, customURL }) => {
                   ),
                 }),
               //the same, but foreign table
-              ...(c.type == 'reference' && {
+              ...(c.type == "reference" && {
                 renderCell: ({ value }) => {
                   const option = options.find((o) => o.value === value)
                   return (
@@ -79,13 +79,13 @@ const Table = ({ name, dropdown, customURL }) => {
 
           const dateColumn = () => {
             const representDate = (date) => {
-              if (new Date(date).getTime() == 0) return 'yes'
-              return new Date(date).toLocaleDateString('en-GB')
+              if (new Date(date).getTime() == 0) return "yes"
+              return new Date(date).toLocaleDateString("en-GB")
             }
 
             return {
               editable: true,
-              type: 'date',
+              type: "date",
               width: 120,
               valueFormatter: ({ value }) => value && representDate(value),
 
@@ -108,25 +108,25 @@ const Table = ({ name, dropdown, customURL }) => {
           }
 
           const boolColumn = {
-            type: 'boolean',
+            type: "boolean",
             width: 100,
           }
           const numberColumn = {
-            type: 'number',
+            type: "number",
             width: 100,
           }
 
           const column = await (async () => {
             switch (c.type) {
-              case 'date':
+              case "date":
                 return dateColumn()
-              case 'bool':
+              case "bool":
                 return boolColumn
-              case 'number':
-              case 'id':
+              case "number":
+              case "id":
                 return numberColumn
-              case 'reference':
-              case 'dropdown':
+              case "reference":
+              case "dropdown":
                 return await referenceColumn()
               case null:
                 return stringColumn
@@ -171,12 +171,12 @@ const Table = ({ name, dropdown, customURL }) => {
       const { error } = await api.delete(`table/${name}/${id}`)
       if (error) errors = true
     }
-    if (errors) alert('Could not delete, check if records are not in use')
+    if (errors) alert("Could not delete, check if records are not in use")
     fetch()
   }
 
   useEffect(() => {
-    setTableDisplayName('')
+    setTableDisplayName("")
     setSelectedRows([])
     setColumns([])
     setRows([])
@@ -192,8 +192,8 @@ const Table = ({ name, dropdown, customURL }) => {
       {!customURL && !dropdown && (
         <header
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
+            display: "flex",
+            justifyContent: "space-between",
           }}
         >
           <Typography variant="h5" color="initial">
@@ -209,7 +209,7 @@ const Table = ({ name, dropdown, customURL }) => {
       )}
 
       <DataGrid
-        sx={{ height: '75vh' }}
+        sx={{ height: "75vh" }}
         rows={rows}
         columns={columns}
         rowHeight={40}

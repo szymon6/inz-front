@@ -1,14 +1,18 @@
-import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import TextField from '@mui/material/TextField'
-import { useForm } from 'react-hook-form'
-import api from '../api'
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
+import TextField from "@mui/material/TextField"
+import api from "api"
+import { observer } from "mobx-react-lite"
+import { useForm } from "react-hook-form"
+import DialogStore from "store/DialogStore"
 
-export default function ChangePassDialog({ handleClose }) {
-  const { register, handleSubmit } = useForm()
+const ChangePassDialog = observer(() => {
+  const { register, handleSubmit, reset } = useForm()
+  const { dialog, close } = DialogStore
+
   const onSubmit = async ({ oldPass, newPass, newPass2 }) => {
     if (newPass !== newPass2) {
       alert("new passwords don't match")
@@ -19,17 +23,20 @@ export default function ChangePassDialog({ handleClose }) {
       newPass,
     })
 
-    if (error && error.status == '401') alert('bad password')
-    else if (error) alert('error')
+    console.log(error)
+
+    if (error?.status == "401") alert("bad password")
+    else if (error) alert("error")
     else if (!error) {
-      handleClose()
-      alert('password changed')
+      close()
+      alert("password changed")
     }
+    reset()
   }
 
   return (
     <div>
-      <Dialog open onClose={handleClose}>
+      <Dialog open={dialog == "changePass"} onClose={close}>
         <DialogTitle>Change Password</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
@@ -39,30 +46,32 @@ export default function ChangePassDialog({ handleClose }) {
               fullWidth
               type="password"
               variant="standard"
-              {...register('oldPass')}
+              {...register("oldPass")}
             />
             <TextField
               label="New password"
               fullWidth
               type="password"
               variant="standard"
-              {...register('newPass')}
+              {...register("newPass")}
             />
             <TextField
               label="Repeat new password"
               fullWidth
               type="password"
               variant="standard"
-              {...register('newPass2')}
+              {...register("newPass2")}
             />
           </DialogContent>
 
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={close}>Cancel</Button>
             <Button type="submit">Save</Button>
           </DialogActions>
         </form>
       </Dialog>
     </div>
   )
-}
+})
+
+export default ChangePassDialog

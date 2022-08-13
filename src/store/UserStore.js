@@ -1,5 +1,5 @@
-import { makeAutoObservable } from 'mobx'
-import api from '../api'
+import api from "api"
+import { makeAutoObservable } from "mobx"
 
 class UserStore {
   val = null
@@ -10,27 +10,27 @@ class UserStore {
   }
 
   async fetch() {
-    const { data, error } = await api.get('auth/user')
+    const { data, error } = await api.get("auth/user")
     if (!error) this.val = data
     this.loading = false
   }
 
   async login(username, password, remember) {
-    const { data, error } = await api.post('auth/login', { username, password })
+    const { data, error } = await api.post("auth/login", { username, password })
     if (error) return false
 
     this.val = data.user
 
-    if (remember) localStorage.setItem('token', data.token)
-    else sessionStorage.setItem('token', data.token)
+    if (remember) localStorage.setItem("token", data.token)
+    else sessionStorage.setItem("token", data.token)
 
     return true
   }
 
   async logout() {
     this.val = null
-    localStorage.removeItem('token')
-    sessionStorage.removeItem('token')
+    localStorage.removeItem("token")
+    sessionStorage.removeItem("token")
   }
 
   isLoggedIn() {

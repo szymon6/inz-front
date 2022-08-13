@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable } from "mobx"
 
 class EditDropdownDialogStore {
   opened = false
@@ -9,8 +9,8 @@ class EditDropdownDialogStore {
     makeAutoObservable(this)
   }
 
-  open = (dropdown, onSubmit) => {
-    this.onClose = onSubmit
+  open = (dropdown, onClose) => {
+    this.onClose = onClose
     this.dropdown = dropdown
     this.opened = true
   }
