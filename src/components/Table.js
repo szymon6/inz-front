@@ -1,85 +1,28 @@
+import { toJS } from "mobx"
+import { observer } from "mobx-react-lite"
+import { useNavigate } from "react-router-dom"
+
 import AddBoxIcon from "@mui/icons-material/AddBox"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { IconButton, Typography } from "@mui/material"
 
 import { DataGrid } from "@mui/x-data-grid"
 import api from "api"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
 
-import {
-  boolColumn,
-  dateColumn,
-  numberColumn,
-  referenceColumn,
-  stringColumn,
-} from "../utils/columns"
-
-const Table = ({ name, dropdown, customURL }) => {
-  const [tableDisplayName, setTableDisplayName] = useState("")
-  const [rows, setRows] = useState([])
-  const [columns, setColumns] = useState([])
-  const [notFound, setNotFound] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  const [selectedRows, setSelectedRows] = useState([])
-
+const Table = observer(({ store }) => {
   const navigate = useNavigate()
 
-  async function fetch() {
-    setLoading(true)
-    //Fetch table info
-
-    //display name
-
-    const { data: tableInfo, error } = dropdown
-      ? await api.get(`dropdown-info`)
-      : await api.get(`table-info/${name}`)
-    if (error) return setNotFound(true)
-    setTableDisplayName(tableInfo.displayName)
-
-    setColumns(
-      await Promise.all(
-        tableInfo.columns.map(async (c) => {
-          const column = await (async () => {
-            switch (c.type) {
-              case "date":
-                return dateColumn(c, name)
-              case "bool":
-                return boolColumn
-              case "number":
-              case "id":
-                return numberColumn
-              case "reference":
-              case "dropdown":
-                return await referenceColumn(c, name)
-              case null:
-                return stringColumn(c, name)
-              default:
-                return null
-            }
-          })()
-
-          return {
-            field: c.name,
-            headerName: c.displayName,
-            editable: !c.readonly,
-            width: 200,
-            ...column,
-          }
-        })
-      )
-    )
-
-    // Fetch rowss
-    let { data: rows } = customURL
-      ? await api.get(customURL)
-      : await api.get(`table/${name}`)
-
-    if (rows) setRows(rows)
-
-    setLoading(false)
-  }
+  let {
+    name,
+    dropdown,
+    customURL,
+    displayName,
+    rows,
+    columns,
+    notFound,
+    loading,
+    selectedRows,
+  } = toJS(store)
 
   function handleCellEditCommit(e) {
     if (e.value instanceof Date) {
@@ -97,18 +40,8 @@ const Table = ({ name, dropdown, customURL }) => {
       if (error) errors = true
     }
     if (errors) alert("Could not delete, check if records are not in use")
-    fetch()
+    // fetch()
   }
-
-  useEffect(() => {
-    setTableDisplayName("")
-    setSelectedRows([])
-    setColumns([])
-    setRows([])
-    setNotFound(false)
-
-    fetch()
-  }, [name])
 
   if (notFound) return <div>Table not found</div>
 
@@ -122,7 +55,7 @@ const Table = ({ name, dropdown, customURL }) => {
           }}
         >
           <Typography variant="h5" color="initial">
-            {tableDisplayName}
+            {displayName}
           </Typography>
           <IconButton
             color="primary"
@@ -143,7 +76,7 @@ const Table = ({ name, dropdown, customURL }) => {
         disableSelectionOnClick
         onCellEditCommit={handleCellEditCommit}
         selectionModel={selectedRows}
-        onSelectionModelChange={(ids) => setSelectedRows(ids)}
+        // onSelectionModelChange={(ids) => setSelectedRows(ids)}
         loading={loading}
       />
 
@@ -154,6 +87,6 @@ const Table = ({ name, dropdown, customURL }) => {
       )}
     </>
   )
-}
+})
 
 export default Table
