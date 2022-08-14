@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField"
 import api from "api"
 import { observer } from "mobx-react-lite"
 import { useForm } from "react-hook-form"
-import DialogStore from "store/DialogStore"
+import DialogStore from "stores/DialogStore"
 
 const ChangePassDialog = observer(() => {
   const { register, handleSubmit, reset } = useForm()

@@ -7,12 +7,12 @@ import Container from "@mui/material/Container"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
-import logo from "img/logo.png"
+import logo from "assets/logo.png"
 import { observer } from "mobx-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Navigate } from "react-router-dom"
-import UserStore from "store/UserStore"
+import UserStore from "stores/UserStore"
 
 const SignIn = observer(() => {
   const { register, handleSubmit, reset } = useForm()

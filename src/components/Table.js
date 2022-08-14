@@ -1,15 +1,19 @@
 import AddBoxIcon from "@mui/icons-material/AddBox"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { IconButton, Typography } from "@mui/material"
-import { styled } from "@mui/material/styles"
+
 import { DataGrid } from "@mui/x-data-grid"
 import api from "api"
 import { useEffect, useState } from "react"
-import { Link as UnstyledLink, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
-const Link = styled(UnstyledLink)({
-  color: "black",
-})
+import {
+  boolColumn,
+  dateColumn,
+  numberColumn,
+  referenceColumn,
+  stringColumn,
+} from "../utils/columns"
 
 const Table = ({ name, dropdown, customURL }) => {
   const [tableDisplayName, setTableDisplayName] = useState("")
@@ -37,89 +41,10 @@ const Table = ({ name, dropdown, customURL }) => {
     setColumns(
       await Promise.all(
         tableInfo.columns.map(async (c) => {
-          const referenceColumn = async () => {
-            const { data: options } = await api.get(
-              c.type == "dropdown"
-                ? `options/dropdown/${c.referenceToDropdownId}`
-                : `options/table/${c.referenceToId}`
-            )
-
-            return {
-              type: "singleSelect",
-
-              //options for dropdown
-              valueOptions: options,
-
-              //map values(ids) to label for every cell
-              valueFormatter: ({ value }) =>
-                value && options.find((o) => o.value === value).label,
-
-              //if its display value, change it to link
-              ...(c.type != "reference" &&
-                c.displayValue && {
-                  renderCell: ({ value, id }) => (
-                    <Link to={`/table/${name}/${id}`}>
-                      {value && options.find((o) => o.value === value).label}
-                    </Link>
-                  ),
-                }),
-              //the same, but foreign table
-              ...(c.type == "reference" && {
-                renderCell: ({ value }) => {
-                  const option = options.find((o) => o.value === value)
-                  return (
-                    <Link to={`/table/${c.referenceTo.name}/${option.value}`}>
-                      {value && option.label}
-                    </Link>
-                  )
-                },
-              }),
-            }
-          }
-
-          const dateColumn = () => {
-            const representDate = (date) => {
-              if (new Date(date).getTime() == 0) return "yes"
-              return new Date(date).toLocaleDateString("en-GB")
-            }
-
-            return {
-              editable: true,
-              type: "date",
-              width: 120,
-              valueFormatter: ({ value }) => value && representDate(value),
-
-              ...(c.displayValue && {
-                renderCell: ({ value, id }) => (
-                  <Link to={`/table/${name}/${id}`}>
-                    {representDate(value)}
-                  </Link>
-                ),
-              }),
-            }
-          }
-
-          const stringColumn = {
-            ...(c.displayValue && {
-              renderCell: ({ value, id }) => (
-                <Link to={`/table/${name}/${id}`}>{value}</Link>
-              ),
-            }),
-          }
-
-          const boolColumn = {
-            type: "boolean",
-            width: 100,
-          }
-          const numberColumn = {
-            type: "number",
-            width: 100,
-          }
-
           const column = await (async () => {
             switch (c.type) {
               case "date":
-                return dateColumn()
+                return dateColumn(c, name)
               case "bool":
                 return boolColumn
               case "number":
@@ -127,9 +52,9 @@ const Table = ({ name, dropdown, customURL }) => {
                 return numberColumn
               case "reference":
               case "dropdown":
-                return await referenceColumn()
+                return await referenceColumn(c, name)
               case null:
-                return stringColumn
+                return stringColumn(c, name)
               default:
                 return null
             }

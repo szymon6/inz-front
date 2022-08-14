@@ -8,7 +8,7 @@ import Table from "components/Table"
 import { observer } from "mobx-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import EditDropdownDialogStore from "store/EditDropdownDialogStore"
+import EditDropdownDialogStore from "stores/EditDropdownDialogStore"
 
 const EditDropdownDialog = observer(() => {
   const { register, handleSubmit, reset } = useForm()

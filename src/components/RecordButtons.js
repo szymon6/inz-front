@@ -2,7 +2,7 @@ import Edit from "@mui/icons-material/Edit"
 import ListAlt from "@mui/icons-material/ListAlt"
 import OpenInNew from "@mui/icons-material/OpenInNew"
 import { IconButton, Tooltip } from "@mui/material"
-import EditDropdownDialogStore from "store/EditDropdownDialogStore"
+import EditDropdownDialogStore from "stores/EditDropdownDialogStore"
 import { useFieldContext } from "./FormField"
 
 export const OpenTableButton = ({ table }) => {

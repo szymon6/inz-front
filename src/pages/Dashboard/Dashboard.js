@@ -18,14 +18,23 @@ import MenuItem from "@mui/material/MenuItem"
 import { styled, useTheme } from "@mui/material/styles"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
+import logo from "assets/logo.png"
 import Dialogs from "components/dialogs"
-import logo from "img/logo.png"
 import { observer } from "mobx-react-lite"
 import * as React from "react"
-import { Navigate, Outlet, useNavigate } from "react-router-dom"
-import DialogStore from "store/DialogStore"
-import UserStore from "store/UserStore"
-import { Link } from "styled"
+import {
+  Link as UnstyledLink,
+  Navigate,
+  Outlet,
+  useNavigate,
+} from "react-router-dom"
+import DialogStore from "stores/DialogStore"
+import UserStore from "stores/UserStore"
+
+export const Link = styled(UnstyledLink)`
+  text-decoration: none;
+  color: inherit;
+`
 
 const drawerWidth = 240
 
