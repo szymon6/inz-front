@@ -1,20 +1,20 @@
-import { styled } from "@mui/material/styles"
-import api from "api"
-import { Link as UnstyledLink } from "react-router-dom"
+import { styled } from '@mui/material/styles'
+import api from 'api'
+import { Link as UnstyledLink } from 'react-router-dom'
 
 const Link = styled(UnstyledLink)({
-  color: "black",
+  color: 'black',
 })
 
 export const referenceColumn = async (c, name) => {
   const { data: options } = await api.get(
-    c.type == "dropdown"
+    c.type == 'dropdown'
       ? `options/dropdown/${c.referenceToDropdownId}`
       : `options/table/${c.referenceToId}`
   )
 
   return {
-    type: "singleSelect",
+    type: 'singleSelect',
 
     //options for dropdown
     valueOptions: options,
@@ -24,7 +24,7 @@ export const referenceColumn = async (c, name) => {
       value && options.find((o) => o.value === value).label,
 
     //if its display value, change it to link
-    ...(c.type != "reference" &&
+    ...(c.type != 'reference' &&
       c.displayValue && {
         renderCell: ({ value, id }) => (
           <Link to={`/table/${name}/${id}`}>
@@ -33,7 +33,7 @@ export const referenceColumn = async (c, name) => {
         ),
       }),
     //the same, but foreign table
-    ...(c.type == "reference" && {
+    ...(c.type == 'reference' && {
       renderCell: ({ value }) => {
         const option = options.find((o) => o.value === value)
         return (
@@ -48,13 +48,13 @@ export const referenceColumn = async (c, name) => {
 
 export const dateColumn = (c, name) => {
   const representDate = (date) => {
-    if (new Date(date).getTime() == 0) return "yes"
-    return new Date(date).toLocaleDateString("en-GB")
+    if (new Date(date).getTime() == 0) return 'yes'
+    return new Date(date).toLocaleDateString('en-GB')
   }
 
   return {
     editable: true,
-    type: "date",
+    type: 'date',
     width: 120,
     valueFormatter: ({ value }) => value && representDate(value),
 
@@ -75,10 +75,10 @@ export const stringColumn = (c, name) => ({
 })
 
 export const boolColumn = {
-  type: "boolean",
+  type: 'boolean',
   width: 100,
 }
 export const numberColumn = {
-  type: "number",
+  type: 'number',
   width: 100,
 }

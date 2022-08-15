@@ -1,13 +1,13 @@
-import Button from "@mui/material/Button"
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogContent from "@mui/material/DialogContent"
-import DialogTitle from "@mui/material/DialogTitle"
-import TextField from "@mui/material/TextField"
-import api from "api"
-import { observer } from "mobx-react-lite"
-import { useForm } from "react-hook-form"
-import DialogStore from "stores/DialogStore"
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import TextField from '@mui/material/TextField'
+import api from 'api'
+import { observer } from 'mobx-react-lite'
+import { useForm } from 'react-hook-form'
+import DialogStore from 'stores/DialogStore'
 
 const ChangePassDialog = observer(() => {
   const { register, handleSubmit, reset } = useForm()
@@ -25,18 +25,18 @@ const ChangePassDialog = observer(() => {
 
     console.log(error)
 
-    if (error?.status == "401") alert("bad password")
-    else if (error) alert("error")
+    if (error?.status == '401') alert('bad password')
+    else if (error) alert('error')
     else if (!error) {
       close()
-      alert("password changed")
+      alert('password changed')
     }
     reset()
   }
 
   return (
     <div>
-      <Dialog open={dialog == "changePass"} onClose={close}>
+      <Dialog open={dialog == 'changePass'} onClose={close}>
         <DialogTitle>Change Password</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
@@ -46,21 +46,21 @@ const ChangePassDialog = observer(() => {
               fullWidth
               type="password"
               variant="standard"
-              {...register("oldPass")}
+              {...register('oldPass')}
             />
             <TextField
               label="New password"
               fullWidth
               type="password"
               variant="standard"
-              {...register("newPass")}
+              {...register('newPass')}
             />
             <TextField
               label="Repeat new password"
               fullWidth
               type="password"
               variant="standard"
-              {...register("newPass2")}
+              {...register('newPass2')}
             />
           </DialogContent>
 

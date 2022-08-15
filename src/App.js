@@ -1,11 +1,11 @@
-import { useEffect } from "react"
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
-import Dashboard from "./pages/Dashboard"
-import RecordPage from "./pages/Dashboard/RecordPage"
-import TablePage from "./pages/Dashboard/TablePage"
-import FileUploadPage from "./pages/FileUploadPage"
-import LoginPage from "./pages/LoginPage"
-import UserStore from "./stores/UserStore"
+import { useEffect } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
+import RecordPage from './pages/Dashboard/RecordPage'
+import TablePage from './pages/Dashboard/TablePage'
+import FileUploadPage from './pages/FileUploadPage'
+import LoginPage from './pages/LoginPage'
+import UserStore from './stores/UserStore'
 
 function App() {
   useEffect(() => {

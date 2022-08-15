@@ -1,47 +1,34 @@
-import { toJS } from "mobx"
-import { observer } from "mobx-react-lite"
-import { useNavigate } from "react-router-dom"
+import { toJS } from 'mobx'
+import { observer } from 'mobx-react-lite'
+import { useNavigate } from 'react-router-dom'
 
-import AddBoxIcon from "@mui/icons-material/AddBox"
-import DeleteIcon from "@mui/icons-material/Delete"
-import { IconButton, Typography } from "@mui/material"
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { IconButton, Typography } from '@mui/material'
 
-import { DataGrid } from "@mui/x-data-grid"
-import api from "api"
+import { DataGrid } from '@mui/x-data-grid'
+import { useEffect, useState } from 'react'
+import TableStore from 'stores/TableStore'
 
-const Table = observer(({ store }) => {
+const Table = observer(({ name, dropdown, customURL }) => {
   const navigate = useNavigate()
+  const [store, setStore] = useState(new TableStore(name, dropdown, customURL))
 
-  let {
-    name,
-    dropdown,
-    customURL,
+  const {
     displayName,
     rows,
     columns,
     notFound,
     loading,
     selectedRows,
+    handleCellEditCommit,
+    setSelectedRows,
+    handleDelete,
   } = toJS(store)
 
-  function handleCellEditCommit(e) {
-    if (e.value instanceof Date) {
-      let date = new Date(e.value)
-      date.setDate(date.getDate() + 1)
-      e.value = date
-    }
-    api.patch(`table/${name}/${e.id}`, { [e.field]: e.value })
-  }
-
-  async function handleDelete() {
-    let errors = false
-    for await (const id of selectedRows) {
-      const { error } = await api.delete(`table/${name}/${id}`)
-      if (error) errors = true
-    }
-    if (errors) alert("Could not delete, check if records are not in use")
-    // fetch()
-  }
+  useEffect(() => {
+    setStore(new TableStore(name, dropdown, customURL))
+  }, [name])
 
   if (notFound) return <div>Table not found</div>
 
@@ -50,8 +37,8 @@ const Table = observer(({ store }) => {
       {!customURL && !dropdown && (
         <header
           style={{
-            display: "flex",
-            justifyContent: "space-between",
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
           <Typography variant="h5" color="initial">
@@ -67,7 +54,7 @@ const Table = observer(({ store }) => {
       )}
 
       <DataGrid
-        sx={{ height: "75vh" }}
+        sx={{ height: '75vh' }}
         rows={rows}
         columns={columns}
         rowHeight={40}
@@ -76,7 +63,7 @@ const Table = observer(({ store }) => {
         disableSelectionOnClick
         onCellEditCommit={handleCellEditCommit}
         selectionModel={selectedRows}
-        // onSelectionModelChange={(ids) => setSelectedRows(ids)}
+        onSelectionModelChange={(ids) => setSelectedRows(ids)}
         loading={loading}
       />
 

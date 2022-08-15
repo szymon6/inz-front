@@ -1,18 +1,18 @@
-import api from "api"
-import { makeAutoObservable } from "mobx"
+import api from 'api'
+import { makeAutoObservable } from 'mobx'
 import {
   boolColumn,
   dateColumn,
   numberColumn,
   referenceColumn,
   stringColumn,
-} from "utils/columns"
+} from 'utils/columns'
 
 class TableStore {
-  name = ""
+  name = ''
   dropdown = false
   customURL = null
-  displayName = ""
+  displayName = ''
   rows = []
   columns = []
   notFound = false
@@ -42,15 +42,15 @@ class TableStore {
       tableInfo.columns.map(async (c) => {
         const column = await (async () => {
           switch (c.type) {
-            case "date":
+            case 'date':
               return dateColumn(c, this.name)
-            case "bool":
+            case 'bool':
               return boolColumn
-            case "number":
-            case "id":
+            case 'number':
+            case 'id':
               return numberColumn
-            case "reference":
-            case "dropdown":
+            case 'reference':
+            case 'dropdown':
               return await referenceColumn(c, this.name)
             case null:
               return stringColumn(c, this.name)
@@ -76,6 +76,29 @@ class TableStore {
 
     this.rows = rows
     this.loading = false
+  }
+
+  handleCellEditCommit = (e) => {
+    if (e.value instanceof Date) {
+      let date = new Date(e.value)
+      date.setDate(date.getDate() + 1)
+      e.value = date
+    }
+    api.patch(`table/${this.name}/${e.id}`, { [e.field]: e.value })
+  }
+
+  handleDelete = async () => {
+    let errors = false
+    for await (const id of this.selectedRows) {
+      const { error } = await api.delete(`table/${this.name}/${id}`)
+      if (error) errors = true
+    }
+    if (errors) alert('Could not delete, check if records are not in use')
+    this.fetch()
+  }
+
+  setSelectedRows = (selectedRows) => {
+    this.selectedRows = selectedRows
   }
 }
 
