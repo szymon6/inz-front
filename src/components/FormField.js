@@ -6,7 +6,7 @@ import {
 } from '@mui/material'
 import { Box } from '@mui/system'
 import api from 'api'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   EditDropdownButton,
   OpenRecordButton,
@@ -14,6 +14,7 @@ import {
 } from './RecordButtons'
 
 const ReferenceField = ({ f, handleChange, data }) => {
+  const mountedRef = useRef(true)
   const [options, setOptions] = useState([])
 
   const fetch = () => {
@@ -23,11 +24,15 @@ const ReferenceField = ({ f, handleChange, data }) => {
           ? `options/dropdown/${f.referenceToDropdownId}`
           : `options/table/${f.referenceToId}`
       )
-      .then(({ data }) => setOptions(data))
+      .then(({ data }) => {
+        //check if component is still mounded
+        if (mountedRef.current) setOptions(data)
+      })
   }
 
   useEffect(() => {
     fetch()
+    return () => (mountedRef.current = false)
   }, [])
 
   if (!options.length) return null

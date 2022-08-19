@@ -3,10 +3,11 @@ import { Box, Button, IconButton, Typography } from '@mui/material'
 import api from 'api'
 import FormField from 'components/FormField'
 import LinkedList from 'components/LinkedList'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const RecordPage = ({ isNew }) => {
+  const mountedRef = useRef(true)
   const { tableName, id } = useParams()
 
   const [notFound, setNotFound] = useState(false)
@@ -22,25 +23,34 @@ const RecordPage = ({ isNew }) => {
     //fetch display name
     const { data: tableInfo, error } = await api.get(`table-info/${tableName}`)
     if (error) return setNotFound(true)
-    setTableDisplayName(tableInfo.displayName)
 
+    //check if component is still mounded
+    if (!mountedRef.current) return
+    setTableDisplayName(tableInfo.displayName)
     setFields(tableInfo.columns)
   }
 
   async function fetchData() {
     let { data } = await api.get(`table/${tableName}/${id}`)
+    //check if component is still mounded
+    if (!mountedRef.current) return
     setData(data)
   }
 
   useEffect(() => {
+    mountedRef.current = true
+
     setNotFound(false)
     setTableDisplayName('')
     setFields([])
-    setData([])
+    setData({})
+    setProvidedData({})
     setPressedButton(null)
 
     fetchColumns()
     if (!isNew) fetchData()
+
+    return () => (mountedRef.current = false)
   }, [tableName, id])
 
   const handleChange = (key, data) => {
